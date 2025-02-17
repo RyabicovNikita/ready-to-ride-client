@@ -1,3 +1,4 @@
 :root {
-  --max-width-screen: 1920;
+  --max-width-screen: 1920px;
+  --desktop-body-padding: 30px;
 }
