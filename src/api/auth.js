@@ -1,9 +1,4 @@
-export const login = () =>
-    fetch("/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json;charset=utf-8",
-        },
-    })
-        .then(({ user }) => user)
-        .catch((e) => ({ error: e.message }));
+import { request } from "../utils";
+
+export const logoutUser = () => request("logout", "POST");
+export const authUser = (isRegister, data) => request(isRegister ? "register" : "login", "POST", data);
