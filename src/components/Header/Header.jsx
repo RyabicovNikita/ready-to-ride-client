@@ -46,7 +46,7 @@ export const Header = ({ setModalShow, setIsRegister }) => {
               </NavDropdown>
               <NavDropdown title="Пассажир" id="basic-nav-dropdown">
                 <NavDropdown.Item href="/trip">Новая поездка</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Другие поездки</NavDropdown.Item>
+                <NavDropdown.Item href="/trips">Другие поездки</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

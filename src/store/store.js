@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { userReducer } from "./slice";
+import { tripReducer, tripsReducer, userReducer } from "./slice";
 
 const rootReducer = {
   user: userReducer,
+  trip: tripReducer,
+  trips: tripsReducer,
 };
 
 const createStore = () => {

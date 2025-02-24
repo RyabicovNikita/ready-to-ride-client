@@ -13,11 +13,12 @@ const tripSlice = createSlice({
   name: "trip",
   initialState: initialTripState,
   reducers: {
-    createTrip: (state, { payload }) => ({ ...payload }),
+    addTripInStore: (state, { payload }) => ({ ...payload }),
+    clearStore: () => initialTripState,
   },
   extraReducers: () => {},
 });
 
 export const { reducer: tripReducer } = tripSlice;
 
-export const { createTrip: addTripInStore } = tripSlice.actions;
+export const { addTripInStore } = tripSlice.actions;

@@ -6,6 +6,13 @@ export const request = (url, method, data) =>
     method: method || "GET",
     body: data ? JSON.stringify(data) : undefined,
   })
-    .catch((e) => ({ error: e }))
-    .then((res) => res.json())
-    .catch((e) => ({ error: e }));
+    .then((res) => {
+      if (res.ok) return res.json();
+      switch (res.status) {
+        case 401:
+          return { code: res.status, error: "Ваша сессия истекла. Пожалуйста, войдите снова." };
+        default:
+          return { error: "Произошла неизвестная ошибка. Пожалуйста, попробуйте позднее." };
+      }
+    })
+    .catch((e) => ({ error: e.status }));
