@@ -7,4 +7,5 @@ export const request = (url, method, data) =>
     body: data ? JSON.stringify(data) : undefined,
   })
     .catch((e) => ({ error: e }))
-    .then((res) => res.json());
+    .then((res) => res.json())
+    .catch((e) => ({ error: e }));

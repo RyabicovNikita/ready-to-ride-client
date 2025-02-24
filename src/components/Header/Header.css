@@ -1,6 +1,0 @@
-.header * {
-  flex-grow: 0 !important;
-  .mg-container {
-    justify-content: space-between;
-  }
-}

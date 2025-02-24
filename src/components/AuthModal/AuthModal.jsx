@@ -2,17 +2,19 @@ import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-import { getFormParams } from "./yup";
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import { USER_SESSION_KEY } from "../../constants";
 import { setUser } from "../../store/slice";
 import { useDispatch } from "react-redux";
 import { authUser } from "../../api";
+import { useError } from "../../hooks";
+import { getFormParams } from "../../yup";
 
 export const AuthModal = ({ show, onHide, isRegister }) => {
   const dispatch = useDispatch();
-  const [serverError, setServerError] = useState(null);
-  const resetServerErrors = () => setServerError(null);
+  const { error, handleError, resetError } = useError();
+
   const {
     register,
     reset,
@@ -21,10 +23,16 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
     formState: { errors },
   } = useForm(getFormParams(isRegister));
 
-  const onSubmit = async ({ email, login, password, isDriver }) => {
-    const { error = "", body: user = null } = await authUser(isRegister, { email, login, password, isDriver });
+  const onSubmit = async ({ email, password, firstName, lastName, isDriver }) => {
+    const { error = "", body: user = null } = await authUser(isRegister, {
+      email,
+      password,
+      firstName,
+      lastName,
+      isDriver,
+    });
     if (error) {
-      setServerError(error);
+      handleError(error);
       return;
     }
     sessionStorage.setItem(USER_SESSION_KEY, JSON.stringify(user));
@@ -34,13 +42,13 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
   };
 
   useEffect(() => {
-    setServerError(null);
+    resetError();
     clearErrors();
   }, [show]);
 
-  const formError =
-    errors?.login?.message || errors?.email?.message || errors?.password?.message || errors?.repeatPassword?.message;
-  const error = formError || serverError;
+  useEffect(() => {
+    handleError(errors);
+  }, [errors]);
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -50,46 +58,66 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
       <Modal.Body>
         {error && (
           <div class="alert alert-danger" role="alert">
-            {error}
+            Заполните все обязательные поля
           </div>
         )}
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form className="needs-validation" onSubmit={handleSubmit(onSubmit)} novalidate>
           {isRegister && (
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Имя пользователя</Form.Label>
-              <Form.Control
-                name="login"
-                type="login"
-                placeholder="Иван Иванов"
-                autoFocus
-                {...register("login", {
-                  onChange: resetServerErrors,
-                })}
-              />
-            </Form.Group>
+            <>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label htmlFor="firstName">Имя</Form.Label>
+                <Form.Control
+                  className={`${errors.firstName?.message ? "is-invalid" : ""}`}
+                  id="firstName"
+                  name="firstName"
+                  type="firstName"
+                  placeholder="Иван"
+                  autoFocus
+                  {...register("firstName", {
+                    onChange: resetError,
+                  })}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label htmlFor="lastName">Фамилия</Form.Label>
+                <Form.Control
+                  className={`${errors.lastName?.message ? "is-invalid" : ""}`}
+                  id="lastName"
+                  name="lastName"
+                  type="lastName"
+                  placeholder="Иванов"
+                  autoFocus
+                  {...register("lastName", {
+                    onChange: resetError,
+                  })}
+                />
+              </Form.Group>
+            </>
           )}
 
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Email</Form.Label>
             <Form.Control
+              className={`${errors.email?.message ? "is-invalid" : ""}`}
               name="email"
               type="email"
               placeholder="name@example.ru"
               autoFocus
               {...register("email", {
-                onChange: resetServerErrors,
+                onChange: resetError,
               })}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Пароль</Form.Label>
             <Form.Control
+              className={`${errors.password?.message ? "is-invalid" : ""}`}
               name="password"
               type="password"
               placeholder="*******"
               autoFocus
               {...register("password", {
-                onChange: resetServerErrors,
+                onChange: resetError,
               })}
             />
           </Form.Group>
@@ -98,12 +126,13 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
               <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                 <Form.Label>Повторите пароль</Form.Label>
                 <Form.Control
+                  className={`${errors.repeatPassword?.message ? "is-invalid" : ""}`}
                   name="repeatPassword"
                   type="password"
                   placeholder="*******"
                   autoFocus
                   {...register("repeatPassword", {
-                    onChange: resetServerErrors,
+                    onChange: resetError,
                   })}
                 />
               </Form.Group>
@@ -117,7 +146,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
                     id="flexCheckDefault"
                     autoFocus
                     {...register("isDriver", {
-                      onChange: resetServerErrors,
+                      onChange: resetError,
                     })}
                   />
                   <label class="form-check-label" for="flexCheckDefault">
@@ -131,7 +160,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
             <Button variant="secondary" onClick={onHide}>
               Отмена
             </Button>
-            <Button disabled={!!formError} type="submit" variant="primary">
+            <Button disabled={!!error} type="submit" variant="primary">
               {isRegister ? "Зарегистрироваться" : "Войти"}
             </Button>
           </Modal.Footer>

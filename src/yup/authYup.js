@@ -1,18 +1,21 @@
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 const registerShapeObject = {
-  login: yup
-    .string()
-    .required("Введите имя пользователя")
-    .matches(/\w+$/, "Некорректный email.")
-    .min(3, "Имя пользователя должно быть не менее 3 символов")
-    .max(50, "Имя пользователя не может превышать 50 символов"),
   email: yup
     .string()
     .required("Введите email")
     .matches(/\w+$/, "Некорректный email.")
     .min(3, "Email должен быть не менее 3 символов")
     .max(64, "Email слишком длинный. Пожалуйста, введите email, не превышающий 64 символов"),
+  firstName: yup
+    .string()
+    .required("Введите имя")
+    .min(3, "Имя может содержать не менее 3 символов")
+    .max(100, "Имя не может быть длиннее 100 символов "),
+  lastName: yup
+    .string()
+    .min(3, "Фамилия может содержать не менее 3 символов")
+    .max(100, "Фамилия не может быть длиннее 100 символов "),
   password: yup
     .string()
     .required("Введите пароль")
