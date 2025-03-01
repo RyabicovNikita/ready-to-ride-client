@@ -9,10 +9,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../store/selectors";
 import { logoutUserFromStore } from "../../store/slice";
 import { logoutUser } from "../../api";
-import { USER_SESSION_KEY } from "../../constants";
+import { LOCAL_TRIPS, USER_SESSION_KEY } from "../../constants";
 import { MgContainer } from "../../core/UI";
+import { useNavigate } from "react-router";
+import { useContext, useEffect } from "react";
+import { UnconfirmedContext } from "../../context";
 
 export const Header = ({ setModalShow, setIsRegister }) => {
+  const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
@@ -28,7 +33,15 @@ export const Header = ({ setModalShow, setIsRegister }) => {
     await logoutUser();
     dispatch(logoutUserFromStore());
     sessionStorage.removeItem(USER_SESSION_KEY);
+    localStorage.removeItem(LOCAL_TRIPS);
+    setUnconfirmedTrips([]);
+    navigate("/");
   };
+
+  useEffect(() => {
+    const trips = localStorage.getItem(LOCAL_TRIPS);
+    if (trips) setUnconfirmedTrips(JSON.parse(trips));
+  }, []);
   return (
     <header className="header bg-light">
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -39,15 +52,25 @@ export const Header = ({ setModalShow, setIsRegister }) => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="gap-5">
-              <NavLink to={"#"}>Главная</NavLink>
-              <NavLink to={"#"}>Мои поездки</NavLink>
-              <NavDropdown title="Водитель" id="basic-nav-dropdown">
-                <NavBarItem to={"#"}>Найти пассажиров</NavBarItem>
-              </NavDropdown>
-              <NavDropdown title="Пассажир" id="basic-nav-dropdown">
-                <NavDropdown.Item href="/trip">Новая поездка</NavDropdown.Item>
-                <NavDropdown.Item href="/trips">Другие поездки</NavDropdown.Item>
-              </NavDropdown>
+              <NavLink to={"/"}>Главная</NavLink>
+              <div className="position-relative">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                  {unconfirmedTrips.length}
+                  <span class="visually-hidden">{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</span>
+                </span>
+                <NavLink to={"myTrips"}>{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</NavLink>
+              </div>
+
+              {user.isDriver ? (
+                <NavDropdown title="Водитель" id="basic-nav-dropdown">
+                  <NavBarItem to={"/trips"}>Найти пассажиров</NavBarItem>
+                </NavDropdown>
+              ) : (
+                <NavDropdown title="Пассажир" id="basic-nav-dropdown">
+                  <NavDropdown.Item href="/trips/new">Новая поездка</NavDropdown.Item>
+                  <NavDropdown.Item href="/trips">Другие поездки</NavDropdown.Item>
+                </NavDropdown>
+              )}
             </Nav>
           </Navbar.Collapse>
           <Navbar.Collapse id="basic-navbar-nav pr-2">
@@ -61,7 +84,7 @@ export const Header = ({ setModalShow, setIsRegister }) => {
                   className="d-inline-block align-top border border-dark rounded-circle p-1"
                 />
                 {user?.id ? (
-                  <NavDropdown title={user.userName} id="basic-nav-dropdown">
+                  <NavDropdown title={user.userName} id="basic-nav-dropdown" className="position-relative">
                     <NavDropdown.Item>Личный кабинет</NavDropdown.Item>
                     <NavDropdown.Item onClick={onLogoutClick}>Выход</NavDropdown.Item>
                   </NavDropdown>

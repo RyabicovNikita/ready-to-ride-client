@@ -7,13 +7,14 @@ export const useError = () => {
     if (typeof err === "string") setError(err);
     else if (err instanceof Error) setError(err.message);
     else if (typeof err === "object") {
+      if (Object.keys(err).length === 0) return;
       if (err.code) {
-        console.log(err);
-        setError({ code: err.code, message: err.error });
+        const { code, error: message, ...props } = err;
+        setError({ code: err.code, message: err.error, ...props });
         return;
       }
-      setError(Object.values(err)?.[0]?.message);
-    } else setError("Произошла неизвестная ошибка");
+      setError(err.error ?? "Произошла неизвестная ошибка");
+    }
   }, []);
 
   const resetError = useCallback(() => setError(""), []);

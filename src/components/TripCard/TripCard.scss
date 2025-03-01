@@ -1,10 +1,12 @@
 .trip-card {
-  display: flex;
-  border: 1px solid #eaeaea;
-  border-radius: 20px;
+  cursor: pointer;
   width: 50%;
+  flex-direction: row;
+  place-items: center;
   padding: 20px;
-  gap: 20px;
+  box-sizing: border-box;
+  border-radius: 35px;
+  margin: 10px auto 10px auto;
   &__datetime {
     display: flex;
     flex-direction: column;
@@ -12,7 +14,5 @@
   &__route {
     display: flex;
     flex-direction: column;
-  }
-  &__linkDriverBtn {
   }
 }

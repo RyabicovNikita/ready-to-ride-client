@@ -2,7 +2,6 @@ import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-
 import { useEffect } from "react";
 import { USER_SESSION_KEY } from "../../constants";
 import { setUser } from "../../store/slice";
@@ -10,8 +9,10 @@ import { useDispatch } from "react-redux";
 import { authUser } from "../../api";
 import { useError } from "../../hooks";
 import { getFormParams } from "../../yup";
+import { useNavigate } from "react-router";
 
 export const AuthModal = ({ show, onHide, isRegister }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error, handleError, resetError } = useError();
 
@@ -39,6 +40,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
     dispatch(setUser(user));
     reset();
     onHide();
+    navigate(-1);
   };
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
       <Modal.Body>
         {error && (
           <div class="alert alert-danger" role="alert">
-            Заполните все обязательные поля
+            {error}
           </div>
         )}
         <Form className="needs-validation" onSubmit={handleSubmit(onSubmit)} novalidate>
