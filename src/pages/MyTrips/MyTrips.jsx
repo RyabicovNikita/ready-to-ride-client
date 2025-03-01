@@ -1,21 +1,24 @@
 import "./MyTrips.scss";
 import { useContext, useEffect, useState } from "react";
-import { TripCard } from "../../components";
-import { getTrips, getTripsByIDs } from "../../api";
-import { useError } from "../../hooks";
+import { Loader, TripCard } from "../../components";
+import { getTripsByIDs } from "../../api";
+import { useError, useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { addTripsInStore, logoutUserFromStore, selectTrips, selectUser } from "../../store";
+import { logoutUserFromStore, selectUser } from "../../store";
 import { useNavigate } from "react-router";
 import { ModalContext, UnconfirmedContext } from "../../context";
 import { USER_SESSION_KEY } from "../../constants";
+import { Button, Modal } from "react-bootstrap";
+import { RequiredModal } from "./components";
 
-export const MyTrips = ({ onlyUserTrips }) => {
+export const MyTrips = () => {
+  const { loading, hideLoader, showLoader } = useLoader();
   const [uncofirmedError, setUncofirmedError] = useState(null);
   const [unconfirmedTrips, setUnconfirmedTrips] = useState([]);
   const { modalView } = useContext(ModalContext);
   const { unconfirmedTrips: unconfirmedTripIDs } = useContext(UnconfirmedContext);
   const navigate = useNavigate();
-  const trips = useSelector(selectTrips);
+
   const dispatch = useDispatch();
   const { error, handleError, resetError } = useError();
   const { isDriver } = useSelector(selectUser);
@@ -25,7 +28,9 @@ export const MyTrips = ({ onlyUserTrips }) => {
     if (unconfirmedTripIDs.length === 0)
       return setUncofirmedError({ code: 404, error: "У вас нет не подтверждённых поездок! :)" });
     else setUncofirmedError(null);
+    showLoader();
     getTripsByIDs(unconfirmedTripIDs).then((res) => {
+      hideLoader();
       if (res?.error) {
         if (res.error === "jwt expired") {
           sessionStorage.removeItem(USER_SESSION_KEY);
@@ -44,9 +49,9 @@ export const MyTrips = ({ onlyUserTrips }) => {
   }, [unconfirmedTripIDs]);
 
   return (
-    <div className="d-flex flex-column gap-3 w-100">
+    <div className="d-flex flex-column gap-3 w-100 h-100">
+      {loading && <Loader />}
       <div className="notConfirmedTrips card">
-        <h5>Неподтверждённые поездки</h5>
         {uncofirmedError ? (
           <div class={`alert alert-${uncofirmedError.code === 404 ? "success" : "danger"}`} role="alert">
             {uncofirmedError?.error}
@@ -68,9 +73,7 @@ export const MyTrips = ({ onlyUserTrips }) => {
           ))
         )}
       </div>
-      <div className="d-flex w-100 justify-content-center">
-        <button className="btn btn-primary w-25">Подтвердить</button>
-      </div>
+      <RequiredModal isDisabled={!!unconfirmedTripIDs?.length} />
     </div>
   );
 };

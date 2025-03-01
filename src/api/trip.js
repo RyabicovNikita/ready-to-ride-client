@@ -6,3 +6,5 @@ export const createTrip = (data) => request("trips", "POST", { ...data, status: 
 export const getTrips = (onlyUserTrips = false) => request("trips", "POST", { onlyUserTrips });
 
 export const getTripsByIDs = (idArray) => request("trips/getByIDs", "POST", { idArray });
+
+export const confirmDriver = (idArray, driverID) => request("trips/confirmDriver", "POST", { idArray, driverID });

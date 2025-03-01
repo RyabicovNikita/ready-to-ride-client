@@ -1,31 +1,33 @@
 import "./Trips.scss";
-import { useContext, useEffect, useState } from "react";
-import { TripCard } from "../../components";
-import { getTrips, getTripsByIDs } from "../../api";
-import { useError } from "../../hooks";
+import { useContext, useEffect } from "react";
+import { Loader, TripCard } from "../../components";
+import { getTrips } from "../../api";
+import { useError, useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { addTripsInStore, logoutUserFromStore, selectTrips, selectUser } from "../../store";
 import { useNavigate } from "react-router";
-import { ModalContext, UnconfirmedContext } from "../../context";
+import { ModalContext } from "../../context";
+import { USER_SESSION_KEY } from "../../constants";
 
 export const Trips = ({ onlyUserTrips }) => {
-  const [uncofirmedError, setUncofirmedError] = useState(null);
-  const [unconfirmedTrips, setUnconfirmedTrips] = useState([]);
+  const { loading, showLoader, hideLoader } = useLoader();
   const { modalView } = useContext(ModalContext);
-  const { unconfirmedTrips: unconfirmedTripIDs } = useContext(UnconfirmedContext);
+
   const navigate = useNavigate();
   const trips = useSelector(selectTrips);
   const dispatch = useDispatch();
   const { error, handleError, resetError } = useError();
-  const { isDriver } = useSelector(selectUser);
+  const { id: userID, isDriver } = useSelector(selectUser);
   useEffect(() => {
+    showLoader();
     let timeOutID;
     getTrips(onlyUserTrips).then((res) => {
+      hideLoader();
       if (res?.error) {
         handleError(res);
 
         if (res.error === "jwt expired") {
-          sessionStorage.removeItem("userData");
+          sessionStorage.removeItem(USER_SESSION_KEY);
           dispatch(logoutUserFromStore());
           if (timeOutID) clearTimeout(timeOutID);
           timeOutID = setTimeout(() => {
@@ -36,7 +38,6 @@ export const Trips = ({ onlyUserTrips }) => {
         }
         return;
       }
-
       dispatch(addTripsInStore(res.body));
     });
 
@@ -46,58 +47,10 @@ export const Trips = ({ onlyUserTrips }) => {
     };
   }, []);
 
-  useEffect(() => {
-    let timeOutID;
-    if (unconfirmedTripIDs.length === 0) return;
-    getTripsByIDs(unconfirmedTripIDs).then((res) => {
-      if (res?.error) {
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem("userData");
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            modalView();
-            resetError();
-          }, 3000);
-        }
-        if (res.code === 404) setUncofirmedError({ code: res.code, error: "Нет не подтверждённых поездок" });
-        else setUncofirmedError(res.error);
-        return;
-      }
-      setUnconfirmedTrips(res.body);
-    });
-  }, [unconfirmedTripIDs]);
-
   return (
-    <div className="d-flex flex-column gap-3">
-      {isDriver && unconfirmedTripIDs.length > 0 ? (
-        <div className="notConfirmedTrips card">
-          <h5>Неподтверждённые поездки</h5>
-          {uncofirmedError ? (
-            <div class={`alert alert-${uncofirmedError.code === 404 ? "success" : "danger"}`} role="alert">
-              {uncofirmedError?.error}
-            </div>
-          ) : (
-            unconfirmedTrips.map((trip, index) => (
-              <TripCard
-                id={trip.id}
-                curUserIsDriver={isDriver}
-                key={index}
-                dateTravel={trip.dateTravel}
-                timeTravel={trip.timeTravel}
-                driverName={trip.driver}
-                passenger={trip.creator}
-                fromWhere={trip.fromWhere}
-                toWhere={trip.toWhere}
-                passengersNumber={trip.passengersNumber}
-              />
-            ))
-          )}
-        </div>
-      ) : null}
+    <div className="d-flex flex-column gap-3 h-100">
+      {loading && <Loader />}
       <div className="trips card">
-        <h5>Поездки</h5>
         {error ? (
           <div class="alert alert-danger" role="alert">
             {error === "jwt expired"
@@ -106,26 +59,32 @@ export const Trips = ({ onlyUserTrips }) => {
           </div>
         ) : (
           <div className="d-flex flex-column align-items-center">
-            <div class="form-floating mb-3 w-50">
-              <input type="text" class="form-control" id="floatingInput" placeholder="Поиск..." />
-              <label for="floatingInput">Поиск поездки</label>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Фильтры</h5>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" defaultChecked={true} id="flexCheckDefault" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Водитель не найден
+                  </label>
+                </div>
+              </div>
             </div>
-            {trips
-              .filter((trip) => !unconfirmedTripIDs.includes(trip.id))
-              .map((trip, index) => (
-                <TripCard
-                  id={trip.id}
-                  curUserIsDriver={isDriver}
-                  key={index}
-                  dateTravel={trip.dateTravel}
-                  timeTravel={trip.timeTravel}
-                  driverName={trip.driver}
-                  passenger={trip.creator}
-                  fromWhere={trip.fromWhere}
-                  toWhere={trip.toWhere}
-                  passengersNumber={trip.passengersNumber}
-                />
-              ))}
+            {trips.map((trip, index) => (
+              <TripCard
+                id={trip.id}
+                userID={userID}
+                curUserIsDriver={isDriver}
+                key={index}
+                dateTravel={trip.dateTravel}
+                timeTravel={trip.timeTravel}
+                driver={trip.driver}
+                passenger={trip.creator}
+                fromWhere={trip.fromWhere}
+                toWhere={trip.toWhere}
+                passengersNumber={trip.passengersNumber}
+              />
+            ))}
           </div>
         )}
       </div>

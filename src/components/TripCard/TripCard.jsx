@@ -4,11 +4,12 @@ import { UnconfirmedContext } from "../../context";
 import { LOCAL_TRIPS } from "../../constants";
 export const TripCard = ({
   id,
+  userID,
   dateTravel,
   timeTravel,
   fromWhere,
   toWhere,
-  driverName,
+  driver,
   passenger,
   passengersNumber,
   curUserIsDriver,
@@ -28,7 +29,7 @@ export const TripCard = ({
     setUnconfirmedTrips(tripIDs);
   };
 
-  const isUnconfirmedTrips = unconfirmedTrips.includes(id);
+  const isUnconfirmedTrips = unconfirmedTrips?.includes(id);
   return (
     <div className="trip-card card">
       <div className="trip-card__datetime card-body">
@@ -41,14 +42,14 @@ export const TripCard = ({
       </div>
       <div className="trip-card__people-info card-body">
         <div className="trip-card__driver card-body">
-          <span className="trip-card__driver-name">Водитель: {driverName ?? "Пока не найден"}</span>
+          <span className="trip-card__driver-name">Водитель: {driver?.userName ?? "Пока не найден"}</span>
         </div>
         <div className="trip-card__passenger card-body">
           <span className="trip-card__passenger-name">Создатель поездки: {passenger.userName}</span>
         </div>
         <div className="trip-card__numberPassengers card-body">Пассажиров: {passengersNumber}</div>
       </div>
-      {curUserIsDriver && (
+      {curUserIsDriver && userID !== driver?.id && (
         <button
           className={`trip-card__linkDriverBtn btn btn-${isUnconfirmedTrips ? "danger" : "primary"}`}
           onClick={onAddTripClick}
