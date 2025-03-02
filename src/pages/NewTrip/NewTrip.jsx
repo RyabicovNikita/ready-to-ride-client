@@ -33,7 +33,7 @@ export const NewTrip = () => {
       handleError(error);
       return;
     }
-    navigate(`/`);
+    navigate(`/trips`);
     dispatch(addTripInStore(newTrip));
   };
 

@@ -1,13 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { TRIP_STATUSES } from "../constants";
+import { CITIES, TRIP_STATUSES } from "../constants";
 
 const shapeTrip = {
-  fromWhere: yup.string().required("Выберите откуда будете выезжать"),
+  fromWhere: yup
+    .string()
+    .required("Выберите откуда будете выезжать")
+    .notOneOf([CITIES[0]], "Выберите откуда будете выезжать"),
   toWhere: yup
     .string()
     .required("Выберите куда хотите поехать")
-    .notOneOf([yup.ref("fromWhere"), null], "Выберите разные пункты назначения"),
+    .notOneOf([CITIES[0]], "Выберите куда хотите поехать")
+    .notOneOf([yup.ref("fromWhere")], "Выберите разные пункты назначения"),
 
   passengerPrice: yup.number().required("Укажите стоимость поездки").moreThan(0, "Стоимость должна быть больше 0"),
   datetime: yup.string().required("Выберите дату и время поездки"),

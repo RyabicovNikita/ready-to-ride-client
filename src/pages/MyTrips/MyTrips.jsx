@@ -8,7 +8,6 @@ import { logoutUserFromStore, selectUser } from "../../store";
 import { useNavigate } from "react-router";
 import { ModalContext, UnconfirmedContext } from "../../context";
 import { USER_SESSION_KEY } from "../../constants";
-import { Button, Modal } from "react-bootstrap";
 import { RequiredModal } from "./components";
 
 export const MyTrips = () => {
