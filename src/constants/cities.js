@@ -1,5 +1,7 @@
+import { SELECTED_VALUES } from "./selectedValues";
+
 export const CITIES = [
-  "Не выбран",
+  SELECTED_VALUES.NOT_SELECT,
   "Москва",
   "Санкт-Петербург",
   "Новосибирск",

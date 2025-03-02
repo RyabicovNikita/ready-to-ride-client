@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addTripsInStore, logoutUserFromStore, selectTrips, selectUser } from "../../store";
 import { useNavigate } from "react-router";
 import { ModalContext } from "../../context";
-import { CITIES, USER_SESSION_KEY } from "../../constants";
+import { CITIES, SELECTED_VALUES, USER_SESSION_KEY } from "../../constants";
 import { useForm } from "react-hook-form";
 import { filteredTripFormParams } from "../../yup";
 import { Card } from "react-bootstrap";
@@ -69,12 +69,13 @@ export const Trips = ({ onlyUserTrips }) => {
     numberPeopleFrom,
     numberPeopleTo,
   }) => {
+    const isNotDriver = notDriver === "true";
     setFilter({
       fromWhere,
       toWhere,
       dateTrip,
       timeTrip,
-      notDriver,
+      notDriver: notDriver === SELECTED_VALUES.NOT_SELECT ? notDriver : isNotDriver,
       priceFrom,
       priceTo,
       numberPeopleFrom,
@@ -205,20 +206,25 @@ export const Trips = ({ onlyUserTrips }) => {
                   />
                 </div>
               </div>
-
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="flexCheckDefault"
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">
+                  Водитель
+                </span>
+                <select
+                  id="from-selector"
+                  className="form-select form-control"
+                  aria-label="Sizing example input"
+                  aria-describedby="inputGroup-sizing-default"
                   {...register("notDriver", {
                     onChange: resetError,
                   })}
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  Водитель не указан
-                </label>
+                >
+                  <option value={SELECTED_VALUES.NOT_SELECT}>{SELECTED_VALUES.NOT_SELECT}</option>
+                  <option value={true}>Отсутствует</option>
+                  <option value={false}>Подтверждён</option>
+                </select>
               </div>
+
               <div className="d-flex justify-content-center">
                 <button onClick={() => reset()} className="btn btn-secondary w-50 m-2">
                   Очистить фильтр
