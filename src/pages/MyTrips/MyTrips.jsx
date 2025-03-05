@@ -2,7 +2,7 @@ import "./MyTrips.scss";
 import { useContext, useEffect, useState } from "react";
 import { Loader, TripCard } from "../../components";
 import { getTripsByIDs } from "../../api";
-import { useError, useLoader } from "../../hooks";
+import { useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserFromStore, selectUser } from "../../store";
 import { useNavigate } from "react-router";
@@ -19,7 +19,7 @@ export const MyTrips = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { error, handleError, resetError } = useError();
+
   const { isDriver } = useSelector(selectUser);
 
   useEffect(() => {
@@ -38,7 +38,6 @@ export const MyTrips = () => {
           timeOutID = setTimeout(() => {
             navigate("/login");
             modalView();
-            resetError();
           }, 3000);
         } else setUncofirmedError(res);
         return;

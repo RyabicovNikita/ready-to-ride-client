@@ -42,7 +42,6 @@ export const Header = ({ setModalShow, setIsRegister }) => {
     const trips = localStorage.getItem(LOCAL_TRIPS);
     if (trips) setUnconfirmedTrips(JSON.parse(trips));
   }, []);
-
   return (
     <header className="header bg-light">
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -54,29 +53,31 @@ export const Header = ({ setModalShow, setIsRegister }) => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="gap-5">
               <NavLink to={"/"}>Главная</NavLink>
-              <div className="position-relative">
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                  {unconfirmedTrips?.length ?? 0}
-                  <span class="visually-hidden">{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</span>
-                </span>
-                <NavLink to={"myTrips"}>{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</NavLink>
-              </div>
-
-              {user.isDriver ? (
-                <NavDropdown title="Водитель" id="basic-nav-dropdown">
-                  <NavBarItem to={"/trips"}>Найти пассажиров</NavBarItem>
-                </NavDropdown>
-              ) : (
-                <NavDropdown title="Пассажир" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="/trips/new">Новая поездка</NavDropdown.Item>
-                  <NavDropdown.Item href="/trips">Другие поездки</NavDropdown.Item>
-                </NavDropdown>
+              {user.id && (
+                <div className="position-relative">
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                    {unconfirmedTrips?.length ?? 0}
+                    <span class="visually-hidden">{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</span>
+                  </span>
+                  <NavLink to={"myTrips"}>{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</NavLink>
+                </div>
               )}
+              {user.id &&
+                (user.isDriver ? (
+                  <NavDropdown title="Водитель" id="basic-nav-dropdown">
+                    <NavBarItem to={"/trips"}>Найти пассажиров</NavBarItem>
+                  </NavDropdown>
+                ) : (
+                  <NavDropdown title="Пассажир" id="basic-nav-dropdown">
+                    <NavDropdown.Item href="/trips/new">Новая поездка</NavDropdown.Item>
+                    <NavDropdown.Item href="/trips">Другие поездки</NavDropdown.Item>
+                  </NavDropdown>
+                ))}
             </Nav>
+            <Nav.Link to={"/info"}>О нас</Nav.Link>
           </Navbar.Collapse>
           <Navbar.Collapse id="basic-navbar-nav pr-2">
             <Nav className="align-items-center">
-              <Nav.Link href="#home">О нас</Nav.Link>
               <div className="d-flex align-items-center m-3">
                 <img
                   src={ghostImg}

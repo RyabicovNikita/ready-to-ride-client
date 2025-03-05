@@ -8,6 +8,7 @@ import { useError } from "../../hooks";
 import { useEffect } from "react";
 import { tripFormParams } from "../../yup";
 import { useNavigate } from "react-router";
+import background from "../../images/backgroundRR.jpg";
 
 export const NewTrip = () => {
   const dispatch = useDispatch();
@@ -42,12 +43,31 @@ export const NewTrip = () => {
   }, [errors]);
 
   return (
-    <div className="trip" style={{ width: "100%" }}>
-      <MgContainer style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <h1 className="trip__title" style={{ textAlign: "center", marginBottom: "50px" }}>
-          Новая поездка
-        </h1>
-        <section className="trip__card card" style={{ width: "600px" }}>
+    <div
+      className="trip"
+      style={{
+        width: "100%",
+      }}
+    >
+      <MgContainer
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundImage: `url(${background})`,
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+          marginTop: "15px",
+        }}
+      >
+        <section
+          className="trip__card card"
+          style={{ width: "600px", backgroundColor: "rgba(255,255,255,0.95)", borderRadius: "30px" }}
+        >
+          <h1 className="trip__title" style={{ textAlign: "center", marginBottom: "50px" }}>
+            Новая поездка
+          </h1>
           <form onSubmit={handleSubmit(onSubmit)} className="trip__card-body card-body">
             {error && (
               <div class="alert alert-danger" role="alert">

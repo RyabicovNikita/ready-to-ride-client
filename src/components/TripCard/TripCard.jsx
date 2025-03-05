@@ -2,6 +2,7 @@ import { useContext } from "react";
 import "./TripCard.scss";
 import { UnconfirmedContext } from "../../context";
 import { LOCAL_TRIPS } from "../../constants";
+import { useNavigate } from "react-router";
 export const TripCard = ({
   id,
   userID,
@@ -15,6 +16,7 @@ export const TripCard = ({
   curUserIsDriver,
 }) => {
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
+  const navigate = useNavigate();
   const onAddTripClick = () => {
     let tripIDs = localStorage.getItem(LOCAL_TRIPS);
     if (!tripIDs) {
@@ -31,7 +33,7 @@ export const TripCard = ({
 
   const isUnconfirmedTrips = unconfirmedTrips?.includes(id);
   return (
-    <div className="trip-card card">
+    <div className="trip-card card" onClick={() => navigate(`${id}`)}>
       <div className="trip-card__datetime card-body">
         <span className="trip-card__date">{dateTravel}</span>
         <span className="trip-card__time">{timeTravel}</span>
@@ -45,7 +47,7 @@ export const TripCard = ({
           <span className="trip-card__driver-name">Водитель: {driver?.userName ?? "Пока не найден"}</span>
         </div>
         <div className="trip-card__passenger card-body">
-          <span className="trip-card__passenger-name">Создатель поездки: {passenger.userName}</span>
+          <span className="trip-card__passenger-name">Создатель поездки: {passenger?.userName}</span>
         </div>
         <div className="trip-card__numberPassengers card-body">Пассажиров: {passengersNumber}</div>
       </div>

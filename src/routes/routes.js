@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import { Main, MyTrips, NewTrip, Trips } from "../pages";
+import { Main, MyTrips, NewTrip, Trip, Trips } from "../pages";
 import { FullScreenContainer } from "../core/UI";
 
 export const RoutesContainer = () => (
@@ -28,6 +28,14 @@ export const RoutesContainer = () => (
       element={
         <FullScreenContainer>
           <MyTrips onlyUserTrips={true} />
+        </FullScreenContainer>
+      }
+    />
+    <Route
+      path="/trips/:id"
+      element={
+        <FullScreenContainer>
+          <Trip />
         </FullScreenContainer>
       }
     />
