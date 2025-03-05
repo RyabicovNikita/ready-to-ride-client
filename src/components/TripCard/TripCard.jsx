@@ -14,26 +14,27 @@ export const TripCard = ({
   passenger,
   passengersNumber,
   curUserIsDriver,
+  handleShow,
+  handleClose,
 }) => {
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
   const navigate = useNavigate();
+
   const onAddTripClick = () => {
-    let tripIDs = localStorage.getItem(LOCAL_TRIPS);
-    if (!tripIDs) {
-      localStorage.setItem(LOCAL_TRIPS, JSON.stringify([id]));
-    } else {
-      tripIDs = JSON.parse(tripIDs);
-      const currentTripIndex = tripIDs.findIndex((tripId) => tripId === id);
-      if (currentTripIndex > -1) tripIDs.splice(currentTripIndex, 1);
-      else tripIDs.push(id);
-      localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripIDs));
-    }
-    setUnconfirmedTrips(tripIDs);
+    handleShow();
   };
 
   const isUnconfirmedTrips = unconfirmedTrips?.includes(id);
   return (
-    <div className="trip-card card" onClick={() => navigate(`${id}`)}>
+    <div
+      className="trip-card card"
+      onClick={({ target }) => {
+        if (target.dataset?.type !== "button") navigate(`${id}`);
+        else {
+          handleShow();
+        }
+      }}
+    >
       <div className="trip-card__datetime card-body">
         <span className="trip-card__date">{dateTravel}</span>
         <span className="trip-card__time">{timeTravel}</span>
@@ -53,6 +54,7 @@ export const TripCard = ({
       </div>
       {curUserIsDriver && userID !== driver?.id && (
         <button
+          data-type="button"
           className={`trip-card__linkDriverBtn btn btn-${isUnconfirmedTrips ? "danger" : "primary"}`}
           onClick={onAddTripClick}
         >

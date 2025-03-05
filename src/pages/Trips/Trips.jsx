@@ -11,18 +11,26 @@ import { CITIES, SELECTED_VALUES, USER_SESSION_KEY } from "../../constants";
 import { useForm } from "react-hook-form";
 import { filteredTripFormParams } from "../../yup";
 import { Card } from "react-bootstrap";
+import { PriceModal } from "./components";
 
 export const Trips = ({ onlyUserTrips }) => {
   const [isFilter, setIsFilter] = useState(false);
   const [filter, setFilter] = useState();
+  const [driverModalState, setDriverModalState] = useState(0);
   const { loading, showLoader, hideLoader } = useLoader();
   const { modalView } = useContext(ModalContext);
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const navigate = useNavigate();
   const trips = useSelector(selectTrips);
   const dispatch = useDispatch();
   const { error, handleError, resetError } = useError();
   const { id: userID, isDriver } = useSelector(selectUser);
+
   useEffect(() => {
     showLoader();
     let timeOutID;
@@ -87,6 +95,13 @@ export const Trips = ({ onlyUserTrips }) => {
   return (
     <div className="d-flex flex-column gap-3 h-100">
       {loading && <Loader />}
+      <PriceModal
+        show={show}
+        handleShow={handleShow}
+        handleClose={handleClose}
+        driverModalState={driverModalState}
+        setDriverModalState={setDriverModalState}
+      />
       <div className="trips card">
         <div className="d-flex flex-column align-items-center">
           <div class="card mt-5">
@@ -256,6 +271,8 @@ export const Trips = ({ onlyUserTrips }) => {
                 fromWhere={trip.fromWhere}
                 toWhere={trip.toWhere}
                 passengersNumber={trip.passengersNumber}
+                handleShow={handleShow}
+                handleClose={handleClose}
               />
             ))
           )}
