@@ -11,6 +11,7 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "i": "^0.3.7",
     "luxon": "^3.5.0",
     "npm": "^10.9.2",

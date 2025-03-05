@@ -1,5 +1,6 @@
 :root {
   --max-width-screen: 1920px;
+  --mobile-body-padding: 10px;
   --desktop-body-padding: 30px;
 }
 

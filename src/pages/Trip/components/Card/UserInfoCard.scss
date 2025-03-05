@@ -1,0 +1,57 @@
+.trip {
+    &__userCard {
+        place-items: center;
+        text-align: center;
+        p {
+            padding: 0;
+            margin: 0;
+        }
+        &-name {
+            display: flex;
+            gap: 5px;
+            place-items: center;
+        }
+        &-content {
+            width: fit-content;
+        }
+        &-price {
+            color: rgb(211, 211, 211);
+        }
+        &-pass-info {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        &-pass-count {
+            font-style: italic;
+            font-weight: 500;
+        }
+    }
+    &__footer {
+        text-align: end;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 767px) {
+    .trip {
+        &__userCard {
+            &-header {
+                font-size: 20px;
+            }
+            &-content {
+                font-size: 15px;
+            }
+            &-price {
+                font-size: 10px;
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+}
+@media (min-width: 1920px) {
+}

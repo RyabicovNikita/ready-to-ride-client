@@ -43,64 +43,107 @@ export const Header = ({ setModalShow, setIsRegister }) => {
     if (trips) setUnconfirmedTrips(JSON.parse(trips));
   }, []);
   return (
-    <header className="header bg-light">
-      <Navbar expand="lg" className="bg-body-tertiary">
-        <MgContainer style={{ display: "flex" }}>
-          <Navbar.Brand href="/">
-            <img alt="" src={logo} width="100" height="100" className="header__logo d-inline-block align-top b" />
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="gap-5">
-              <NavLink to={"/"}>Главная</NavLink>
-              {user.id && (
-                <div className="position-relative">
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                    {unconfirmedTrips?.length ?? 0}
-                    <span class="visually-hidden">{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</span>
-                  </span>
-                  <NavLink to={"myTrips"}>{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</NavLink>
-                </div>
-              )}
-              {user.id &&
-                (user.isDriver ? (
-                  <NavDropdown title="Водитель" id="basic-nav-dropdown">
-                    <NavBarItem to={"/trips"}>Найти пассажиров</NavBarItem>
-                  </NavDropdown>
-                ) : (
-                  <NavDropdown title="Пассажир" id="basic-nav-dropdown">
-                    <NavDropdown.Item href="/trips/new">Новая поездка</NavDropdown.Item>
-                    <NavDropdown.Item href="/trips">Другие поездки</NavDropdown.Item>
-                  </NavDropdown>
-                ))}
-            </Nav>
-            <Nav.Link to={"/info"}>О нас</Nav.Link>
-          </Navbar.Collapse>
-          <Navbar.Collapse id="basic-navbar-nav pr-2">
-            <Nav className="align-items-center">
-              <div className="d-flex align-items-center m-3">
-                <img
-                  src={ghostImg}
-                  width="30"
-                  height="30"
-                  className="d-inline-block align-top border border-dark rounded-circle p-1"
-                />
-                {user?.id ? (
-                  <NavDropdown title={user.userName} id="basic-nav-dropdown" className="position-relative">
-                    <NavDropdown.Item>Личный кабинет</NavDropdown.Item>
-                    <NavDropdown.Item onClick={onLogoutClick}>Выход</NavDropdown.Item>
-                  </NavDropdown>
-                ) : (
-                  <NavDropdown title="Авторизация" id="basic-nav-dropdown">
-                    <NavDropdown.Item onClick={onLoginClick}>Войти</NavDropdown.Item>
-                    <NavDropdown.Item onClick={onRegisterClick}>Регистрация</NavDropdown.Item>
-                  </NavDropdown>
-                )}
-              </div>
-            </Nav>
-          </Navbar.Collapse>
-        </MgContainer>
-      </Navbar>
-    </header>
+      <header className="header bg-light">
+          <Navbar expand="lg" className="bg-body-tertiary">
+              <MgContainer style={{ display: "flex" }}>
+                  <Navbar.Brand href="/">
+                      <img
+                          alt=""
+                          src={logo}
+                          width="60"
+                          height="auto"
+                          className="header__logo d-inline-block align-top b"
+                      />
+                  </Navbar.Brand>
+                  <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                  <Navbar.Collapse id="basic-navbar-nav">
+                      <Nav className="gap-5">
+                          <NavLink to={"/"}>Главная</NavLink>
+                          {user.id && (
+                              <div className="position-relative">
+                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                                      {unconfirmedTrips?.length ?? 0}
+                                      <span class="visually-hidden">
+                                          {user.isDriver
+                                              ? "Мои пассажиры"
+                                              : "Мои поездки"}
+                                      </span>
+                                  </span>
+                                  <NavLink to={"myTrips"}>
+                                      {user.isDriver
+                                          ? "Мои пассажиры"
+                                          : "Мои поездки"}
+                                  </NavLink>
+                              </div>
+                          )}
+                          {user.id &&
+                              (user.isDriver ? (
+                                  <NavDropdown
+                                      title="Водитель"
+                                      id="basic-nav-dropdown"
+                                  >
+                                      <NavBarItem to={"/trips"}>
+                                          Найти пассажиров
+                                      </NavBarItem>
+                                  </NavDropdown>
+                              ) : (
+                                  <NavDropdown
+                                      title="Пассажир"
+                                      id="basic-nav-dropdown"
+                                  >
+                                      <NavDropdown.Item href="/trips/new">
+                                          Новая поездка
+                                      </NavDropdown.Item>
+                                      <NavDropdown.Item href="/trips">
+                                          Другие поездки
+                                      </NavDropdown.Item>
+                                  </NavDropdown>
+                              ))}
+                      </Nav>
+                      <Nav.Link to={"/info"}>О нас</Nav.Link>
+                  </Navbar.Collapse>
+                  <Navbar.Collapse id="basic-navbar-nav pr-2">
+                      <Nav className="align-items-center">
+                          <div className="d-flex align-items-center m-3">
+                              <img
+                                  src={ghostImg}
+                                  width="30"
+                                  height="30"
+                                  className="d-inline-block align-top border border-dark rounded-circle p-1"
+                              />
+                              {user?.id ? (
+                                  <NavDropdown
+                                      title={user.userName}
+                                      id="basic-nav-dropdown"
+                                      className="position-relative"
+                                  >
+                                      <NavDropdown.Item>
+                                          Личный кабинет
+                                      </NavDropdown.Item>
+                                      <NavDropdown.Item onClick={onLogoutClick}>
+                                          Выход
+                                      </NavDropdown.Item>
+                                  </NavDropdown>
+                              ) : (
+                                  <NavDropdown
+                                      title="Авторизация"
+                                      id="basic-nav-dropdown"
+                                  >
+                                      <NavDropdown.Item onClick={onLoginClick}>
+                                          Войти
+                                      </NavDropdown.Item>
+                                      <NavDropdown.Item
+                                          onClick={onRegisterClick}
+                                      >
+                                          Регистрация
+                                      </NavDropdown.Item>
+                                  </NavDropdown>
+                              )}
+                          </div>
+                      </Nav>
+                  </Navbar.Collapse>
+              </MgContainer>
+          </Navbar>
+      </header>
   );
 };
