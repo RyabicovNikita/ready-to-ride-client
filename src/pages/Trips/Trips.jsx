@@ -16,14 +16,11 @@ import { PriceModal } from "./components";
 export const Trips = ({ onlyUserTrips }) => {
   const [isFilter, setIsFilter] = useState(false);
   const [filter, setFilter] = useState();
-  const [driverModalState, setDriverModalState] = useState(0);
+
   const { loading, showLoader, hideLoader } = useLoader();
   const { modalView } = useContext(ModalContext);
 
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [modalState, setModalState] = useState(false);
 
   const navigate = useNavigate();
   const trips = useSelector(selectTrips);
@@ -95,13 +92,7 @@ export const Trips = ({ onlyUserTrips }) => {
   return (
     <div className="d-flex flex-column gap-3 h-100">
       {loading && <Loader />}
-      <PriceModal
-        show={show}
-        handleShow={handleShow}
-        handleClose={handleClose}
-        driverModalState={driverModalState}
-        setDriverModalState={setDriverModalState}
-      />
+      <PriceModal show={modalState} modalState={modalState} setModalState={setModalState} />
       <div className="trips card">
         <div className="d-flex flex-column align-items-center">
           <div class="card mt-5">
@@ -271,8 +262,8 @@ export const Trips = ({ onlyUserTrips }) => {
                 fromWhere={trip.fromWhere}
                 toWhere={trip.toWhere}
                 passengersNumber={trip.passengersNumber}
-                handleShow={handleShow}
-                handleClose={handleClose}
+                modalState={modalState}
+                setModalState={setModalState}
               />
             ))
           )}

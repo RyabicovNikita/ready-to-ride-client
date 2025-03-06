@@ -1,8 +1,8 @@
-import { useContext } from "react";
 import "./TripCard.scss";
+import { useContext } from "react";
 import { UnconfirmedContext } from "../../context";
-import { LOCAL_TRIPS } from "../../constants";
 import { useNavigate } from "react-router";
+import { LOCAL_TRIPS } from "../../constants";
 export const TripCard = ({
   id,
   userID,
@@ -14,25 +14,35 @@ export const TripCard = ({
   passenger,
   passengersNumber,
   curUserIsDriver,
-  handleShow,
-  handleClose,
+  modalState,
+  setModalState,
 }) => {
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
   const navigate = useNavigate();
+  const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
 
   const onAddTripClick = () => {
-    handleShow();
+    if (!isUnconfirmedTrips) {
+      setUnconfirmedTrips((prevTrips) => [...prevTrips, { id: id, passengerPrice: passenger.price }]);
+      setModalState({ id, isActive: true, passengerPrice: passenger.price });
+    } else {
+      let tripsArr = localStorage.getItem(LOCAL_TRIPS);
+      if (!tripsArr) return;
+      tripsArr = JSON.parse(tripsArr);
+      const tripIndex = tripsArr.findIndex((i) => i.id === id);
+      if (tripIndex > -1) tripsArr.splice(tripIndex, 1);
+      localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripsArr));
+      console.log(tripsArr);
+      setUnconfirmedTrips(tripsArr);
+    }
   };
 
-  const isUnconfirmedTrips = unconfirmedTrips?.includes(id);
   return (
     <div
       className="trip-card card"
+      data-id={id}
       onClick={({ target }) => {
         if (target.dataset?.type !== "button") navigate(`${id}`);
-        else {
-          handleShow();
-        }
       }}
     >
       <div className="trip-card__datetime card-body">
