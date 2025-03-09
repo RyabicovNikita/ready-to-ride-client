@@ -8,7 +8,7 @@ import { setUser } from "../../store/slice";
 import { useDispatch } from "react-redux";
 import { authUser } from "../../api";
 import { useError } from "../../hooks";
-import { getFormParams } from "../../yup";
+import { getFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
 
 export const AuthModal = ({ show, onHide, isRegister }) => {

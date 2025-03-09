@@ -7,7 +7,7 @@ const tripsSlice = createSlice({
   initialState: initialTripState,
   reducers: {
     addTripsInStore: (state, { payload }) => [...payload],
-    clearStore: () => initialTripState,
+    clearTripsStore: () => initialTripState,
   },
   extraReducers: () => {},
 });

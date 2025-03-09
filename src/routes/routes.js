@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router";
-import { Main, MyTrips, NewTrip, Trip, Trips } from "../pages";
+import { Main, UnconfirmedTrips, NewTrip, Trip, Trips } from "../pages";
 import { FullScreenContainer } from "../core/UI";
 
-export const RoutesContainer = () => (
+export const RoutesContainer = ({ authModalHide, authModalView, priceModalState, setPriceModalState }) => (
   <Routes>
     <Route
       path="/"
@@ -22,12 +22,12 @@ export const RoutesContainer = () => (
       }
     />
 
-    <Route path="/trips" element={<Trips />} />
+    <Route path="/trips" element={<Trips authModalHide={authModalHide} authModalView={authModalView} />} />
     <Route
-      path="/myTrips"
+      path="/trips/unconfirmed"
       element={
         <FullScreenContainer>
-          <MyTrips onlyUserTrips={true} />
+          <UnconfirmedTrips authModalHide={authModalHide} authModalView={authModalView} />
         </FullScreenContainer>
       }
     />
@@ -35,7 +35,11 @@ export const RoutesContainer = () => (
       path="/trips/:id"
       element={
         <FullScreenContainer>
-          <Trip />
+          <Trip
+            priceModalState={priceModalState}
+            setPriceModalState={setPriceModalState}
+            authModalView={authModalView}
+          />
         </FullScreenContainer>
       }
     />

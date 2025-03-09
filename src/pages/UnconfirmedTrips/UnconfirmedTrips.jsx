@@ -1,4 +1,4 @@
-import "./MyTrips.scss";
+import "./UnconfirmedTrips.scss";
 import { useContext, useEffect, useState } from "react";
 import { Loader, TripCard } from "../../components";
 import { getTripsByIDs } from "../../api";
@@ -6,15 +6,14 @@ import { useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserFromStore, selectUser } from "../../store";
 import { useNavigate } from "react-router";
-import { ModalContext, UnconfirmedContext } from "../../context";
+import { UnconfirmedContext } from "../../context";
 import { USER_SESSION_KEY } from "../../constants";
 import { RequiredModal } from "./components";
 
-export const MyTrips = () => {
+export const UnconfirmedTrips = ({ authModalHide, authModalView }) => {
   const { loading, hideLoader, showLoader } = useLoader();
   const [uncofirmedError, setUncofirmedError] = useState(null);
   const [unconfirmedTrips, setUnconfirmedTrips] = useState([]);
-  const { modalView } = useContext(ModalContext);
   const { unconfirmedTrips: unconfirmedTripIDs } = useContext(UnconfirmedContext);
   const navigate = useNavigate();
 
@@ -37,7 +36,7 @@ export const MyTrips = () => {
           if (timeOutID) clearTimeout(timeOutID);
           timeOutID = setTimeout(() => {
             navigate("/login");
-            modalView();
+            authModalView();
           }, 3000);
         } else setUncofirmedError(res);
         return;

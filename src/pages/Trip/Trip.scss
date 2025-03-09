@@ -1,52 +1,64 @@
 .trip {
-    position: relative;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #d5d5d57a;
+  border-radius: 20px;
+  height: 100%;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  box-sizing: border-box;
+  &__container {
+    position: absolute;
+    width: 100%;
+    place-items: center;
+    color: black;
+  }
+  &__header {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border: 1px solid #d5d5d57a;
-    border-radius: 20px;
-    height: 100%;
-    padding-top: 10px;
-    padding-bottom: 5px;
-    box-sizing: border-box;
-    &__container {
-        place-items: center;
+    position: absolute;
+    text-align: start;
+    place-items: flex-start;
+    color: black;
+
+    padding: 10px;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+  }
+  &__cities {
+    display: flex;
+    gap: 10px;
+  }
+  &__content {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 10px;
+  }
+  &__footer {
+    &-seats-icon {
+      width: 20px;
     }
-    &__header {
-        position: absolute;
-        text-align: start;
-        place-items: flex-start;
-        color: #185582;
-        background-color: #c7deff;
-        padding: 10px;
-        border-top-right-radius: 20px;
-        border-top-left-radius: 20px;
-        right: 0;
-        top: 0;
-        width: 100%;
-        z-index: -1;
+    &-count {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
     }
-    &__cities {
+    &-pass-count {
+      display: flex;
+      gap: 5px;
+    }
+    &-totalPrice {
+      display: flex;
+      gap: 20px;
+      &-container {
         display: flex;
-        gap: 10px;
+        flex-direction: column;
+      }
     }
-    &__content {
-        display: grid;
-        grid-template-columns: 50% 50%;
-        grid-gap: 10px;
-    }
-    &__footer {
-        &-seats-icon {
-            width: 20px;
-        }
-        &-count {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        &-pass-count {
-            display: flex;
-            gap: 5px;
-        }
-    }
+  }
 }

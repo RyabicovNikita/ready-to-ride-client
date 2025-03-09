@@ -12,7 +12,6 @@ export const PriceModal = ({ modalState, setModalState }) => {
   const { error, handleError } = useError();
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
   const { loading, hideLoader, showLoader } = useLoader();
-
   const handleAccept = ({ driverPrice }) => {
     let tripsArr = localStorage.getItem(LOCAL_TRIPS);
     if (tripsArr) tripsArr = JSON.parse(tripsArr);
@@ -31,7 +30,6 @@ export const PriceModal = ({ modalState, setModalState }) => {
     }
     setModalState({ isActive: false });
   };
-
   const handleCancel = () => {
     let tripsArr = localStorage.getItem(LOCAL_TRIPS);
     if (tripsArr) {
@@ -41,7 +39,7 @@ export const PriceModal = ({ modalState, setModalState }) => {
       localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripsArr));
     }
     setUnconfirmedTrips((prevState) => prevState.filter((i) => i.id !== modalState.id));
-    setModalState(null);
+    setModalState({ isActive: false });
   };
   const passengerPrice = Number(modalState?.passengerPrice);
   const shapeObject = {
@@ -68,7 +66,12 @@ export const PriceModal = ({ modalState, setModalState }) => {
   return (
     <div className="d-flex justify-content-center w-100">
       {loading && <Loader />}
-      <Modal show={!!modalState?.isActive} onHide={() => setModalState(null)} backdrop="static" keyboard={false}>
+      <Modal
+        show={!!modalState?.isActive}
+        onHide={() => setModalState({ isActive: false })}
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Стоимость</Modal.Title>
         </Modal.Header>

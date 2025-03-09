@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { UnconfirmedContext } from "../../../../context";
 import { useError, useLoader } from "../../../../hooks";
-import { confirmDriver } from "../../../../api";
+import { addDriverInTrips } from "../../../../api";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../../store";
 import { Loader } from "../../../../components";
@@ -20,7 +20,7 @@ export const RequiredModal = ({ isDisabled }) => {
 
   const handleAccept = async () => {
     showLoader();
-    const res = await confirmDriver(unconfirmedTrips, userID);
+    const res = await addDriverInTrips(unconfirmedTrips, userID);
     hideLoader();
     handleClose();
     if (res.error) handleError(res);

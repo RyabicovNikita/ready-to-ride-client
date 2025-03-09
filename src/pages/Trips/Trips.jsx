@@ -1,26 +1,22 @@
 import "./Trips.scss";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader, TripCard } from "../../components";
 import { getTrips } from "../../api";
 import { useError, useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { addTripsInStore, logoutUserFromStore, selectTrips, selectUser } from "../../store";
 import { useNavigate } from "react-router";
-import { ModalContext } from "../../context";
 import { CITIES, SELECTED_VALUES, USER_SESSION_KEY } from "../../constants";
 import { useForm } from "react-hook-form";
-import { filteredTripFormParams } from "../../yup";
+import { filteredTripFormParams } from "../../utils/yup/formParams";
 import { Card } from "react-bootstrap";
 import { PriceModal } from "./components";
 
-export const Trips = ({ onlyUserTrips }) => {
+export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceModalState }) => {
   const [isFilter, setIsFilter] = useState(false);
   const [filter, setFilter] = useState();
 
   const { loading, showLoader, hideLoader } = useLoader();
-  const { modalView } = useContext(ModalContext);
-
-  const [modalState, setModalState] = useState(false);
 
   const navigate = useNavigate();
   const trips = useSelector(selectTrips);
@@ -42,7 +38,7 @@ export const Trips = ({ onlyUserTrips }) => {
           if (timeOutID) clearTimeout(timeOutID);
           timeOutID = setTimeout(() => {
             navigate("/login");
-            modalView();
+            authModalView();
             resetError();
           }, 3000);
         }
@@ -92,8 +88,8 @@ export const Trips = ({ onlyUserTrips }) => {
   return (
     <div className="d-flex flex-column gap-3 h-100">
       {loading && <Loader />}
-      <PriceModal show={modalState} modalState={modalState} setModalState={setModalState} />
-      <div className="trips card">
+      <PriceModal show={priceModalState} modalState={priceModalState} setModalState={setPriceModalState} />
+      <div className="trips card" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
         <div className="d-flex flex-column align-items-center">
           <div class="card mt-5">
             <form onSubmit={handleSubmit(onSubmit)} className="trip__card-body card-body">
@@ -262,8 +258,9 @@ export const Trips = ({ onlyUserTrips }) => {
                 fromWhere={trip.fromWhere}
                 toWhere={trip.toWhere}
                 passengersNumber={trip.passengersNumber}
-                modalState={modalState}
-                setModalState={setModalState}
+                priceModalState={priceModalState}
+                setPriceModalState={setPriceModalState}
+                status={trip.status}
               />
             ))
           )}

@@ -1,8 +1,9 @@
 import "./TripCard.scss";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UnconfirmedContext } from "../../context";
 import { useNavigate } from "react-router";
-import { LOCAL_TRIPS } from "../../constants";
+import { addUnconfirmedTrip } from "../../utils";
+import { TRIP_STATUSES } from "../../constants";
 export const TripCard = ({
   id,
   userID,
@@ -14,35 +15,29 @@ export const TripCard = ({
   passenger,
   passengersNumber,
   curUserIsDriver,
-  modalState,
-  setModalState,
+  setPriceModalState,
+  status,
 }) => {
+  const [headerColor, setHeaderColor] = useState("white");
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
   const navigate = useNavigate();
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
+  const updateHeaderColor = () => {
+    if (!status) return;
+    const statusData = Object.values(TRIP_STATUSES).find((i) => i.text === status);
 
-  const onAddTripClick = () => {
-    if (!isUnconfirmedTrips) {
-      setUnconfirmedTrips((prevTrips) => [...prevTrips, { id: id, passengerPrice: passenger.price }]);
-      setModalState({ id, isActive: true, passengerPrice: passenger.price });
-    } else {
-      let tripsArr = localStorage.getItem(LOCAL_TRIPS);
-      if (!tripsArr) return;
-      tripsArr = JSON.parse(tripsArr);
-      const tripIndex = tripsArr.findIndex((i) => i.id === id);
-      if (tripIndex > -1) tripsArr.splice(tripIndex, 1);
-      localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripsArr));
-      console.log(tripsArr);
-      setUnconfirmedTrips(tripsArr);
-    }
+    setHeaderColor(statusData?.color ?? "white");
   };
 
+  useEffect(() => {
+    updateHeaderColor();
+  }, [status]);
   return (
     <div
       className="trip-card card"
       data-id={id}
       onClick={({ target }) => {
-        if (target.dataset?.type !== "button") navigate(`${id}`);
+        if (target.dataset?.type !== "button") navigate(`/trips/${id}`);
       }}
     >
       <div className="trip-card__datetime card-body">
@@ -62,15 +57,18 @@ export const TripCard = ({
         </div>
         <div className="trip-card__numberPassengers card-body">Пассажиров: {passengersNumber}</div>
       </div>
-      {curUserIsDriver && userID !== driver?.id && (
+      {curUserIsDriver && userID !== driver?.id && !driver?.userName && (
         <button
           data-type="button"
           className={`trip-card__linkDriverBtn btn btn-${isUnconfirmedTrips ? "danger" : "primary"}`}
-          onClick={onAddTripClick}
+          onClick={() =>
+            addUnconfirmedTrip({ curTripID: id, passenger, setPriceModalState, setUnconfirmedTrips, unconfirmedTrips })
+          }
         >
           {isUnconfirmedTrips ? "х" : "+"}
         </button>
       )}
+      <div className="trip-card__statusLine" style={{ backgroundColor: headerColor }}></div>
     </div>
   );
 };

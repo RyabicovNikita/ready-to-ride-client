@@ -15,7 +15,7 @@ import { useNavigate } from "react-router";
 import { useContext, useEffect } from "react";
 import { UnconfirmedContext } from "../../context";
 
-export const Header = ({ setModalShow, setIsRegister }) => {
+export const Header = ({ setAuthModal, setIsRegister }) => {
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
   const navigate = useNavigate();
   const user = useSelector(selectUser);
@@ -23,11 +23,11 @@ export const Header = ({ setModalShow, setIsRegister }) => {
 
   const onRegisterClick = () => {
     setIsRegister(true);
-    setModalShow(true);
+    setAuthModal(true);
   };
   const onLoginClick = () => {
     setIsRegister(false);
-    setModalShow(true);
+    setAuthModal(true);
   };
   const onLogoutClick = async () => {
     await logoutUser();
@@ -41,6 +41,7 @@ export const Header = ({ setModalShow, setIsRegister }) => {
   useEffect(() => {
     let trips = localStorage.getItem(LOCAL_TRIPS);
     if (trips) trips = JSON.parse(trips);
+    console.log(trips);
     if (trips?.length > 0) setUnconfirmedTrips(trips);
   }, []);
   return (
@@ -52,30 +53,25 @@ export const Header = ({ setModalShow, setIsRegister }) => {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="gap-5">
-              <NavLink to={"/"}>Главная</NavLink>
-              {user.id && (
-                <div className="position-relative">
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                    {unconfirmedTrips?.length ?? 0}
-                    <span class="visually-hidden">{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</span>
-                  </span>
-                  <NavLink to={"myTrips"}>{user.isDriver ? "Мои пассажиры" : "Мои поездки"}</NavLink>
-                </div>
-              )}
-              {user.id &&
-                (user.isDriver ? (
-                  <NavDropdown title="Водитель" id="basic-nav-dropdown">
-                    <NavBarItem to={"/trips"}>Найти пассажиров</NavBarItem>
-                  </NavDropdown>
-                ) : (
-                  <NavDropdown title="Пассажир" id="basic-nav-dropdown">
-                    <NavDropdown.Item href="/trips/new">Новая поездка</NavDropdown.Item>
-                    <NavDropdown.Item href="/trips">Другие поездки</NavDropdown.Item>
-                  </NavDropdown>
-                ))}
-            </Nav>
-            <Nav.Link to={"/info"}>О нас</Nav.Link>
+            <NavBarItem to={"/"}>Главная</NavBarItem>
+            {user.id && (
+              <>
+                {user.isDriver && (
+                  <div className="position-relative">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                      {unconfirmedTrips?.length ?? 0}
+                      <span class="visually-hidden">На подтверждении</span>
+                    </span>
+                    <NavBarItem to={window.location.origin + "trips/unconfirmed"}>На подтверждении</NavBarItem>
+                  </div>
+                )}
+                <NavBarItem to={window.location.origin + "/trips"}>Поездки</NavBarItem>
+                <NavLink to={"trips/new"}>
+                  <div className="btn btn-primary w-100">Новая поездка</div>
+                </NavLink>
+              </>
+            )}
+            <NavBarItem to={"info"}>О нас</NavBarItem>
           </Navbar.Collapse>
           <Navbar.Collapse id="basic-navbar-nav pr-2">
             <Nav className="align-items-center">

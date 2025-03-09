@@ -13,6 +13,12 @@ export const useError = () => {
         setError({ code: err.code, message: err.error, ...props });
         return;
       }
+
+      if (Object.keys(err).values((i) => !!i?.message)) {
+        console.log(Object.values(err));
+        setError(Object.values(err)[0]?.message);
+        return;
+      }
       setError(err.error ?? "Произошла неизвестная ошибка");
     }
   }, []);
