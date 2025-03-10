@@ -113,12 +113,9 @@ export const NewTrip = () => {
                 class="form-control"
                 aria-label="Sizing example input"
                 aria-describedby="inputGroup-sizing-default"
-                max={DateTime.now().plus({ years: 1 }).toFormat("yyyy-MM-dd TT").toString()}
-                min={DateTime.now().toFormat("yyyy-MM-dd TT").toString()}
-                defaultValue={DateTime.now().toFormat("yyyy-MM-dd TT")}
-                {...register("datetime", {
-                  onChange: resetError,
-                })}
+                max={DateTime.now().plus({ years: 1 }).toFormat("yyyy-MM-dd'T'T").toString()}
+                min={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
+                defaultValue={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
               />
               <span class="input-group-text" id="inputGroup-sizing-default">
                 Стоимость

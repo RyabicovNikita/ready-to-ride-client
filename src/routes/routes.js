@@ -22,7 +22,17 @@ export const RoutesContainer = ({ authModalHide, authModalView, priceModalState,
       }
     />
 
-    <Route path="/trips" element={<Trips authModalHide={authModalHide} authModalView={authModalView} />} />
+    <Route
+      path="/trips"
+      element={
+        <Trips
+          authModalHide={authModalHide}
+          authModalView={authModalView}
+          priceModalState={priceModalState}
+          setPriceModalState={setPriceModalState}
+        />
+      }
+    />
     <Route
       path="/trips/unconfirmed"
       element={

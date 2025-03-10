@@ -62,13 +62,15 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
                       {unconfirmedTrips?.length ?? 0}
                       <span class="visually-hidden">На подтверждении</span>
                     </span>
-                    <NavBarItem to={window.location.origin + "trips/unconfirmed"}>На подтверждении</NavBarItem>
+                    <NavBarItem to={window.location.origin + "/trips/unconfirmed"}>На подтверждении</NavBarItem>
                   </div>
                 )}
                 <NavBarItem to={window.location.origin + "/trips"}>Поездки</NavBarItem>
-                <NavLink to={"trips/new"}>
-                  <div className="btn btn-primary w-100">Новая поездка</div>
-                </NavLink>
+                {!user.isDriver && (
+                  <NavLink to={"trips/new"}>
+                    <div className="btn btn-primary w-100">Новая поездка</div>
+                  </NavLink>
+                )}
               </>
             )}
             <NavBarItem to={"info"}>О нас</NavBarItem>

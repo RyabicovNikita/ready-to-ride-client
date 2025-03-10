@@ -57,7 +57,7 @@ export const TripCard = ({
         </div>
         <div className="trip-card__numberPassengers card-body">Пассажиров: {passengersNumber}</div>
       </div>
-      {curUserIsDriver && userID !== driver?.id && !driver?.userName && (
+      {curUserIsDriver && userID !== driver?.id && !driver?.userName && status === TRIP_STATUSES.NEW.text && (
         <button
           data-type="button"
           className={`trip-card__linkDriverBtn btn btn-${isUnconfirmedTrips ? "danger" : "primary"}`}
@@ -68,7 +68,9 @@ export const TripCard = ({
           {isUnconfirmedTrips ? "х" : "+"}
         </button>
       )}
-      <div className="trip-card__statusLine" style={{ backgroundColor: headerColor }}></div>
+      <div className="trip-card__statusLine" style={{ backgroundColor: headerColor }}>
+        {status}
+      </div>
     </div>
   );
 };

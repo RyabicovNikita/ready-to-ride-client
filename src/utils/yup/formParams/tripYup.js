@@ -1,7 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CITIES, TRIP_STATUSES } from "../../../constants";
-import { DateTime } from "luxon";
 
 const shapeTrip = {
   fromWhere: yup
@@ -15,7 +14,6 @@ const shapeTrip = {
     .notOneOf([yup.ref("fromWhere")], "Выберите разные пункты назначения"),
 
   passengerPrice: yup.number().required("Укажите стоимость поездки").moreThan(0, "Стоимость должна быть больше 0"),
-  datetime: yup.lazy(() => yup.date()),
 
   numberPeople: yup
     .number()

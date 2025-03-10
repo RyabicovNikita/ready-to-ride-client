@@ -17,8 +17,13 @@
   }
   &__statusLine {
     position: absolute;
-    height: 100%;
-    width: 15px;
-    right: 40px;
+    width: 100%;
+    height: fit-content;
+    padding: 5px;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    text-align: center;
+    right: 0;
+    top: 0;
   }
 }
