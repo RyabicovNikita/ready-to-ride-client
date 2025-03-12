@@ -171,7 +171,11 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => 
             </div>
 
             <div className="trip__content">
-              <UserInfoCard userName={trip?.driver?.userName} userPrice={trip?.driver?.price} role={"driver"} />
+              <UserInfoCard
+                userName={trip?.driver?.userName ?? "Пока не найден"}
+                userPrice={trip?.driver?.price}
+                role={"driver"}
+              />
               <UserInfoCard
                 userName={trip?.creator?.userName}
                 passengersNumber={trip.passengersNumber}

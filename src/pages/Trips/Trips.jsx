@@ -223,7 +223,7 @@ export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceM
                 >
                   <option value={SELECTED_VALUES.NOT_SELECT}>{SELECTED_VALUES.NOT_SELECT}</option>
                   <option value={true}>Отсутствует</option>
-                  <option value={false}>Подтверждён</option>
+                  <option value={false}>Указан</option>
                 </select>
               </div>
 

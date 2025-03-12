@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import { Main, UnconfirmedTrips, NewTrip, Trip, Trips } from "../pages";
+import { Main, UnconfirmedTrips, NewTrip, Trip, Trips, AboutUs } from "../pages";
 import { FullScreenContainer } from "../core/UI";
 
 export const RoutesContainer = ({ authModalHide, authModalView, priceModalState, setPriceModalState }) => (
@@ -50,6 +50,14 @@ export const RoutesContainer = ({ authModalHide, authModalView, priceModalState,
             setPriceModalState={setPriceModalState}
             authModalView={authModalView}
           />
+        </FullScreenContainer>
+      }
+    />
+    <Route
+      path="/aboutUs"
+      element={
+        <FullScreenContainer>
+          <AboutUs />
         </FullScreenContainer>
       }
     />
