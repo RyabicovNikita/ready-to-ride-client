@@ -53,13 +53,6 @@ export const RoutesContainer = ({ authModalHide, authModalView, priceModalState,
         </FullScreenContainer>
       }
     />
-    <Route
-      path="/aboutUs"
-      element={
-        <FullScreenContainer>
-          <AboutUs />
-        </FullScreenContainer>
-      }
-    />
+    <Route path="/aboutUs" element={<AboutUs />} />
   </Routes>
 );

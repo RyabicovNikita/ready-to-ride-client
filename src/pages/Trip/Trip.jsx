@@ -254,7 +254,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => 
                 </div>
                 {isDriver && !trip?.driver?.userName && (
                   <button
-                    className={`btn ${isUnconfirmedTrips ? "btn-danger" : "btn-primary"}`}
+                    className={`btn ${isUnconfirmedTrips ? "btn-danger" : "btn-dark"}`}
                     onClick={() =>
                       addUnconfirmedTrip({
                         curTripID: trip.id,

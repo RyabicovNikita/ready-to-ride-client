@@ -231,7 +231,7 @@ export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceM
                 <button onClick={() => reset()} className="btn btn-secondary w-50 m-2">
                   Очистить фильтр
                 </button>
-                <button type="submit" className="btn btn-primary w-25 m-2">
+                <button type="submit" className="btn btn-dark w-25 m-2">
                   Применить
                 </button>
               </div>

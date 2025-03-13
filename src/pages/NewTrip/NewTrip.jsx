@@ -148,7 +148,7 @@ export const NewTrip = () => {
               <label for="floatingInput">Кол-во человек</label>
             </div>
             <div className="d-flex justify-content-center">
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-dark">
                 Опубликовать
               </button>
             </div>

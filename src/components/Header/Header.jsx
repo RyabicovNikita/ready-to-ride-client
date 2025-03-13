@@ -58,7 +58,7 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
               <>
                 {user.isDriver && (
                   <div className="position-relative">
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
                       {unconfirmedTrips?.length ?? 0}
                       <span class="visually-hidden">На подтверждении</span>
                     </span>
@@ -68,12 +68,12 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
                 <NavBarItem to={window.location.origin + "/trips"}>Поездки</NavBarItem>
                 {!user.isDriver && (
                   <NavLink to={"trips/new"}>
-                    <div className="btn btn-primary w-100">Новая поездка</div>
+                    <div className="btn btn-dark w-100">Новая поездка</div>
                   </NavLink>
                 )}
               </>
             )}
-            <NavBarItem to={"info"}>О нас</NavBarItem>
+            <NavBarItem to={"aboutUs"}>О нас</NavBarItem>
           </Navbar.Collapse>
           <Navbar.Collapse id="basic-navbar-nav pr-2">
             <Nav className="align-items-center">

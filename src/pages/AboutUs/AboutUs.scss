@@ -1,0 +1,115 @@
+.aboutUs {
+  margin-bottom: 50px;
+  &__driverTasks {
+    background-color: white;
+    color: black;
+  }
+  &__passTasks {
+    background-color: black;
+    color: white;
+  }
+  img {
+    position: relative;
+    z-index: -1;
+  }
+  &__info {
+    margin-top: 50px;
+  }
+  &__passenger {
+    &-first-image {
+      width: 100%;
+    }
+    &-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    &-down {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      &-image {
+        width: auto;
+        max-height: 270px;
+      }
+    }
+    &-finish-image {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #c1c1c1;
+  width: fit-content;
+  padding: 15px;
+  border-radius: 20px;
+}
+
+.yin-yang {
+  &__driver {
+    color: black;
+    position: absolute;
+    right: 5%;
+    top: 50%;
+  }
+  &__pass {
+    color: white;
+    position: absolute;
+    top: 40%;
+    left: 5%;
+  }
+}
+
+.yin-yang-200 {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 2em auto;
+  background: white;
+  border: 5px solid black;
+  border-radius: 50%;
+  box-shadow: 295px 0 0 -200px black inset;
+  animation-name: yinYangRotate;
+  animation-iteration-count: infinite;
+
+  animation-duration: 2s;
+  transition: 0.5s;
+}
+
+.yin-yang-200:before,
+.yin-yang-200:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: auto;
+  left: 50px;
+  right: 50px;
+  border-radius: 50%;
+}
+
+.yin-yang-200:before {
+  top: 0;
+  background: white;
+  border: 40px solid black;
+}
+
+.yin-yang-200:after {
+  bottom: 0;
+  background: black;
+  border: 40px solid white;
+}
+
+@keyframes yinYangRotate {
+  0% {
+    rotate: 0deg;
+  }
+  100% {
+    rotate: 360deg;
+  }
+}
