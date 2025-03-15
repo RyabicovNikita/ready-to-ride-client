@@ -47,10 +47,6 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
     if (trips?.length > 0) setUnconfirmedTrips(trips);
   }, []);
 
-  useEffect(() => {
-    console.log(unconfirmedTrips);
-  }, [unconfirmedTrips]);
-
   return (
     <header className="header bg-light">
       <Navbar expand="lg" className="bg-body-tertiary">

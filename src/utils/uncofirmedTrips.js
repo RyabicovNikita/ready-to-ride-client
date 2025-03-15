@@ -9,7 +9,6 @@ export const addUnconfirmedTrip = ({
 }) => {
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === curTripID);
   if (!isUnconfirmedTrips) {
-    setUnconfirmedTrips((prevTrips) => [...prevTrips, { id: curTripID, passengerPrice: passenger.price }]);
     setPriceModalState({ id: curTripID, isActive: true, passengerPrice: passenger.price });
   } else {
     let tripsArr = localStorage.getItem(LOCAL_TRIPS);

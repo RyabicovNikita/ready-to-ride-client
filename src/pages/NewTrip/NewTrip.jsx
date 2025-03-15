@@ -112,6 +112,9 @@ export const NewTrip = () => {
                 max={DateTime.now().plus({ years: 1 }).toFormat("yyyy-MM-dd'T'T").toString()}
                 min={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
                 defaultValue={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
+                {...register("datetime", {
+                  onChange: resetError,
+                })}
               />
               <span class="input-group-text" id="inputGroup-sizing-default">
                 Стоимость

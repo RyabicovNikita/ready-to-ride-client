@@ -28,7 +28,7 @@ export const PriceModal = ({ modalState, setModalState }) => {
 
       localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripsArr));
     }
-
+    setUnconfirmedTrips((prevState) => [...prevState, { id: modalState.id, driverPrice: driverPrice }]);
     setModalState({ isActive: false });
   };
   const handleCancel = () => {
