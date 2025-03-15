@@ -1,5 +1,6 @@
 .aboutUs {
   margin-bottom: 50px;
+
   &__driverTasks {
     background-color: white;
     color: black;
@@ -36,6 +37,21 @@
       width: 100%;
       height: auto;
     }
+  }
+  .btnInfo {
+    border: 1px solid;
+    padding: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.5s;
+    border-color: black;
+    background-color: white;
+  }
+
+  .active {
+    color: white;
+    background-color: black;
+    border-color: white;
   }
 }
 

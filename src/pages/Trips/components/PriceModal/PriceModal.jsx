@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { UnconfirmedContext } from "../../../../context";
 import { useError, useLoader } from "../../../../hooks";
-import { Loader } from "../../../../components";
+import { Error, Loader } from "../../../../components";
 import { LOCAL_TRIPS } from "../../../../constants";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -28,6 +28,7 @@ export const PriceModal = ({ modalState, setModalState }) => {
 
       localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripsArr));
     }
+
     setModalState({ isActive: false });
   };
   const handleCancel = () => {
@@ -77,11 +78,7 @@ export const PriceModal = ({ modalState, setModalState }) => {
         </Modal.Header>
         <Modal.Body>
           <form id="driverPriceForm" onSubmit={handleSubmit(handleAccept)}>
-            {(error || errors?.driverPrice?.message) && (
-              <div class="alert alert-danger" role="alert">
-                {error || errors?.driverPrice?.message}
-              </div>
-            )}
+            {(error || errors?.driverPrice?.message) && <Error> {error || errors?.driverPrice?.message}</Error>}
             <p htmlFor="driverPrice">Введите своё предложение стоимости поездки</p>
 
             <input

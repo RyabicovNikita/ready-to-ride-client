@@ -1,5 +1,5 @@
-import { Form } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
+import { Button, Form } from "react-bootstrap";
+
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
@@ -10,6 +10,8 @@ import { authUser } from "../../api";
 import { useError } from "../../hooks";
 import { getFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
+import { ActionButton, HeaderButton } from "../Button";
+import { Error } from "../Error";
 
 export const AuthModal = ({ show, onHide, isRegister }) => {
   const navigate = useNavigate();
@@ -58,11 +60,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
         <Modal.Title>{isRegister ? "Регистрация" : "Авторизация"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {error && (
-          <div class="alert alert-danger" role="alert">
-            {error}
-          </div>
-        )}
+        {error && <Error>{error}</Error>}
         <Form className="needs-validation" onSubmit={handleSubmit(onSubmit)} novalidate>
           {isRegister && (
             <>
@@ -162,7 +160,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
             <Button variant="secondary" onClick={onHide}>
               Отмена
             </Button>
-            <Button disabled={!!error} type="submit" variant="primary">
+            <Button className="bg-dark border-dark" disabled={!!error} type="submit" variant="primary">
               {isRegister ? "Зарегистрироваться" : "Войти"}
             </Button>
           </Modal.Footer>

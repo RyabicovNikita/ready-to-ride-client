@@ -14,6 +14,7 @@ import { MgContainer } from "../../core/UI";
 import { useNavigate } from "react-router";
 import { useContext, useEffect } from "react";
 import { UnconfirmedContext } from "../../context";
+import { HeaderButton } from "../Button";
 
 export const Header = ({ setAuthModal, setIsRegister }) => {
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
@@ -40,10 +41,16 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
 
   useEffect(() => {
     let trips = localStorage.getItem(LOCAL_TRIPS);
+
     if (trips) trips = JSON.parse(trips);
-    console.log(trips);
+
     if (trips?.length > 0) setUnconfirmedTrips(trips);
   }, []);
+
+  useEffect(() => {
+    console.log(unconfirmedTrips);
+  }, [unconfirmedTrips]);
+
   return (
     <header className="header bg-light">
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -52,8 +59,8 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
             <img alt="" src={logo} width="60" height="auto" className="header__logo d-inline-block align-top b" />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <NavBarItem to={"/"}>Главная</NavBarItem>
+          <Navbar.Collapse className="gap-3" id="basic-navbar-nav">
+            <HeaderButton to={"/"}>Главная</HeaderButton>
             {user.id && (
               <>
                 {user.isDriver && (
@@ -62,18 +69,18 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
                       {unconfirmedTrips?.length ?? 0}
                       <span class="visually-hidden">На подтверждении</span>
                     </span>
-                    <NavBarItem to={window.location.origin + "/trips/unconfirmed"}>На подтверждении</NavBarItem>
+                    <HeaderButton to={window.location.origin + "/trips/unconfirmed"}>На подтверждении</HeaderButton>
                   </div>
                 )}
-                <NavBarItem to={window.location.origin + "/trips"}>Поездки</NavBarItem>
+                <HeaderButton to={window.location.origin + "/trips"}>Поездки</HeaderButton>
                 {!user.isDriver && (
-                  <NavLink to={"trips/new"}>
+                  <NavLink to={window.location.origin + "/trips/new"}>
                     <div className="btn btn-dark w-100">Новая поездка</div>
                   </NavLink>
                 )}
               </>
             )}
-            <NavBarItem to={"aboutUs"}>О нас</NavBarItem>
+            <HeaderButton to={"aboutUs"}>О нас</HeaderButton>
           </Navbar.Collapse>
           <Navbar.Collapse id="basic-navbar-nav pr-2">
             <Nav className="align-items-center">
@@ -86,13 +93,19 @@ export const Header = ({ setAuthModal, setIsRegister }) => {
                 />
                 {user?.id ? (
                   <NavDropdown title={user.userName} id="basic-nav-dropdown" className="position-relative">
-                    <NavDropdown.Item>Личный кабинет</NavDropdown.Item>
-                    <NavDropdown.Item onClick={onLogoutClick}>Выход</NavDropdown.Item>
+                    <NavDropdown.Item className="button non-border">Личный кабинет</NavDropdown.Item>
+                    <NavDropdown.Item className="button non-border " onClick={onLogoutClick}>
+                      Выход
+                    </NavDropdown.Item>
                   </NavDropdown>
                 ) : (
                   <NavDropdown title="Авторизация" id="basic-nav-dropdown">
-                    <NavDropdown.Item onClick={onLoginClick}>Войти</NavDropdown.Item>
-                    <NavDropdown.Item onClick={onRegisterClick}>Регистрация</NavDropdown.Item>
+                    <NavDropdown.Item className="button non-border" onClick={onLoginClick}>
+                      Войти
+                    </NavDropdown.Item>
+                    <NavDropdown.Item className="button non-border" onClick={onRegisterClick}>
+                      Регистрация
+                    </NavDropdown.Item>
                   </NavDropdown>
                 )}
               </div>

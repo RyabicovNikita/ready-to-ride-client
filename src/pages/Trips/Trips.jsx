@@ -1,6 +1,6 @@
 import "./Trips.scss";
 import { useEffect, useState } from "react";
-import { Loader, TripCard } from "../../components";
+import { Error, Loader, TripCard } from "../../components";
 import { getTrips } from "../../api";
 import { useError, useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,7 @@ export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceM
     getTrips(onlyUserTrips, filter).then((res) => {
       hideLoader();
       if (res?.error) {
-        handleError(res);
+        handleError(res.error);
 
         if (res.error === "jwt expired") {
           sessionStorage.removeItem(USER_SESSION_KEY);
@@ -53,12 +53,7 @@ export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceM
     };
   }, [isFilter]);
 
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm(filteredTripFormParams);
+  const { register, reset, handleSubmit } = useForm(filteredTripFormParams);
   const onSubmit = async ({
     fromWhere,
     toWhere,
@@ -239,11 +234,11 @@ export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceM
           </div>
           <h1>Поездки</h1>
           {error ? (
-            <div class="alert alert-danger" role="alert">
+            <Error>
               {error === "jwt expired"
                 ? "Ваш сеанс устарел, перенаправление на страницу авторизации..."
                 : error?.message ?? error?.error ?? error}
-            </div>
+            </Error>
           ) : (
             trips.map((trip, index) => (
               <TripCard

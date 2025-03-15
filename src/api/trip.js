@@ -10,10 +10,15 @@ export const getTripsByIDs = (idArray) => request("trips/getByIDs", "POST", { id
 export const addDriverInTrips = (tripsData, driverID) =>
   request("trips/addDriverInTrips", "POST", { tripsData, driverID });
 
-export const getTripByID = (id) => request(`trips/${id}`, "POST", { id });
+export const getTripByID = (id) => request(`trips/${id}`);
 
 export const confirmDriver = (tripID, totalPrice) => request("trips/confirmDriver", "POST", { id: tripID, totalPrice });
 
 export const cancelTrip = (id) => request("trips/cancelTrip", "POST", { id });
 
-export const looseDriver = (tripID) => request("trips/looseDriver", "POST", { id: tripID });
+export const looseDriver = (tripID) => request("trips/looseDriver", "DELETE", { id: tripID });
+
+export const updateTrip = ({ fromWhere, toWhere, passengerPrice, numberPeople, tripID }) =>
+  request(`trips/${tripID}/edit`, "POST", { fromWhere, toWhere, passengerPrice, numberPeople });
+
+export const deleteTrip = (id) => request(`trips/${id}/delete`, "DELETE");

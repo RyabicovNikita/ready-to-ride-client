@@ -15,7 +15,6 @@ export const useError = () => {
       }
 
       if (Object.keys(err).values((i) => !!i?.message)) {
-        console.log(Object.values(err));
         setError(Object.values(err)[0]?.message);
         return;
       }

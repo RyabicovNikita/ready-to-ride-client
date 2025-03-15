@@ -29,6 +29,7 @@ export const RequiredModal = ({ isDisabled }) => {
       localStorage.removeItem(LOCAL_TRIPS);
     }
   };
+
   return (
     <div className="d-flex justify-content-center w-100">
       {error}

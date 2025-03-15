@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { MgContainer } from "../../components";
+import { Error, MgContainer } from "../../components";
 import { CITIES } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addTripInStore, selectUser } from "../../store";
@@ -63,11 +63,7 @@ export const NewTrip = () => {
             Новая поездка
           </h1>
           <form onSubmit={handleSubmit(onSubmit)} className="trip__card-body card-body">
-            {error && (
-              <div class="alert alert-danger" role="alert">
-                {error}
-              </div>
-            )}
+            {error && <Error>{error}</Error>}
             <div class="input-group mb-3">
               <span class="input-group-text" id="inputGroup-sizing-default">
                 Откуда
