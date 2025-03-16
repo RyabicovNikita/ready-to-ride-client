@@ -74,6 +74,7 @@ export const AuthModal = ({ show, isRegister }) => {
           {isRegister && (
             <>
               <FormInput
+                className={"mb-3"}
                 key={USER_PROPS.NAME}
                 error={getErrorByProp(USER_PROPS.NAME)}
                 placeholder="Иван"
@@ -82,6 +83,7 @@ export const AuthModal = ({ show, isRegister }) => {
                 Имя
               </FormInput>
               <FormInput
+                className={"mb-3"}
                 key={USER_PROPS.SURNAME}
                 error={getErrorByProp(USER_PROPS.SURNAME)}
                 placeholder="Иванов"
@@ -92,6 +94,7 @@ export const AuthModal = ({ show, isRegister }) => {
             </>
           )}
           <FormInput
+            className={"mb-3"}
             key={USER_PROPS.EMAIL}
             error={getErrorByProp(USER_PROPS.EMAIL)}
             placeholder="myEmail@example.ru"
@@ -101,6 +104,7 @@ export const AuthModal = ({ show, isRegister }) => {
             Email
           </FormInput>
           <FormInput
+            className={"mb-3"}
             key={USER_PROPS.PASSWORD}
             error={getErrorByProp(USER_PROPS.PASSWORD)}
             type="password"
@@ -113,6 +117,7 @@ export const AuthModal = ({ show, isRegister }) => {
           {isRegister && (
             <>
               <FormInput
+                className={"mb-3"}
                 key={USER_PROPS.REPEAT_PASSWORD}
                 error={getErrorByProp(USER_PROPS.REPEAT_PASSWORD)}
                 placeholder="*******"
