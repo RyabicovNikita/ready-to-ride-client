@@ -11,6 +11,8 @@ import { getFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
 import { Error } from "../Error";
 import { AuthModalContext } from "../../context";
+import { FormCheckbox, FormInput } from "./components";
+import { INPUT_NAMES } from "./constants";
 
 export const AuthModal = ({ show, isRegister }) => {
   const navigate = useNavigate();
@@ -53,6 +55,14 @@ export const AuthModal = ({ show, isRegister }) => {
     handleError(errors);
   }, [errors]);
 
+  const getRegProps = (propName) => ({
+    ...register(propName, {
+      onChange: resetError,
+    }),
+  });
+
+  const getError = (propName) => errors?.[propName]?.message;
+
   return (
     <Modal show={show} onHide={authModalHide}>
       <Modal.Header>
@@ -63,96 +73,55 @@ export const AuthModal = ({ show, isRegister }) => {
         <Form className="needs-validation" onSubmit={handleSubmit(onSubmit)} novalidate>
           {isRegister && (
             <>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                <Form.Label htmlFor="firstName">Имя</Form.Label>
-                <Form.Control
-                  className={`${errors.firstName?.message ? "is-invalid" : ""}`}
-                  id="firstName"
-                  name="firstName"
-                  type="firstName"
-                  placeholder="Иван"
-                  autoFocus
-                  {...register("firstName", {
-                    onChange: resetError,
-                  })}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                <Form.Label htmlFor="lastName">Фамилия</Form.Label>
-                <Form.Control
-                  className={`${errors.lastName?.message ? "is-invalid" : ""}`}
-                  id="lastName"
-                  name="lastName"
-                  type="lastName"
-                  placeholder="Иванов"
-                  autoFocus
-                  {...register("lastName", {
-                    onChange: resetError,
-                  })}
-                />
-              </Form.Group>
+              <FormInput
+                key={INPUT_NAMES.NAME}
+                error={getError(INPUT_NAMES.NAME)}
+                placeholder="Иван"
+                props={getRegProps(INPUT_NAMES.NAME)}
+              >
+                Имя
+              </FormInput>
+              <FormInput
+                key={INPUT_NAMES.SURNAME}
+                error={getError(INPUT_NAMES.SURNAME)}
+                placeholder="Иванов"
+                props={getRegProps(INPUT_NAMES.SURNAME)}
+              >
+                Фамилия
+              </FormInput>
             </>
           )}
+          <FormInput
+            key={INPUT_NAMES.EMAIL}
+            error={getError(INPUT_NAMES.EMAIL)}
+            placeholder="myEmail@example.ru"
+            type="email"
+            props={getRegProps(INPUT_NAMES.EMAIL)}
+          >
+            Email
+          </FormInput>
+          <FormInput
+            key={INPUT_NAMES.PASSWORD}
+            error={getError(INPUT_NAMES.PASSWORD)}
+            placeholder="*******"
+            props={getRegProps(INPUT_NAMES.PASSWORD)}
+          >
+            Пароль
+          </FormInput>
 
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              className={`${errors.email?.message ? "is-invalid" : ""}`}
-              name="email"
-              type="email"
-              placeholder="name@example.ru"
-              autoFocus
-              {...register("email", {
-                onChange: resetError,
-              })}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Пароль</Form.Label>
-            <Form.Control
-              className={`${errors.password?.message ? "is-invalid" : ""}`}
-              name="password"
-              type="password"
-              placeholder="*******"
-              autoFocus
-              {...register("password", {
-                onChange: resetError,
-              })}
-            />
-          </Form.Group>
           {isRegister && (
             <>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                <Form.Label>Повторите пароль</Form.Label>
-                <Form.Control
-                  className={`${errors.repeatPassword?.message ? "is-invalid" : ""}`}
-                  name="repeatPassword"
-                  type="password"
-                  placeholder="*******"
-                  autoFocus
-                  {...register("repeatPassword", {
-                    onChange: resetError,
-                  })}
-                />
-              </Form.Group>
-              <Form.Group controlId="exampleForm.ControlTextarea1">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    name="isDriver"
-                    id="flexCheckDefault"
-                    autoFocus
-                    {...register("isDriver", {
-                      onChange: resetError,
-                    })}
-                  />
-                  <label class="form-check-label" for="flexCheckDefault">
-                    Я водитель
-                  </label>
-                </div>
-              </Form.Group>
+              <FormInput
+                key={INPUT_NAMES.REPEAT_PASSWORD}
+                error={getError(INPUT_NAMES.REPEAT_PASSWORD)}
+                placeholder="*******"
+                props={getRegProps(INPUT_NAMES.REPEAT_PASSWORD)}
+              >
+                Повторите пароль
+              </FormInput>
+              <FormCheckbox key={INPUT_NAMES.IS_DRIVER} props={getRegProps(INPUT_NAMES.IS_DRIVER)}>
+                Я водитель
+              </FormCheckbox>
             </>
           )}
           <Modal.Footer>
