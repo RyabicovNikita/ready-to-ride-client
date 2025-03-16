@@ -4,6 +4,7 @@ import { UnconfirmedContext } from "../../context";
 import { useNavigate } from "react-router";
 import { addUnconfirmedTrip } from "../../utils";
 import { TRIP_STATUSES } from "../../constants";
+import { usePriceModalContext } from "../../hooks";
 export const TripCard = ({
   id,
   userID,
@@ -15,11 +16,11 @@ export const TripCard = ({
   passenger,
   passengersNumber,
   curUserIsDriver,
-  setPriceModalState,
   status,
 }) => {
   const [headerColor, setHeaderColor] = useState("white");
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
+  const { priceModalView } = usePriceModalContext();
   const navigate = useNavigate();
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
   const updateHeaderColor = () => {
@@ -62,7 +63,7 @@ export const TripCard = ({
           data-type="button"
           className={`trip-card__linkDriverBtn btn btn-${isUnconfirmedTrips ? "danger" : "primary"}`}
           onClick={() =>
-            addUnconfirmedTrip({ curTripID: id, passenger, setPriceModalState, setUnconfirmedTrips, unconfirmedTrips })
+            addUnconfirmedTrip({ curTripID: id, passenger, priceModalView, setUnconfirmedTrips, unconfirmedTrips })
           }
         >
           {isUnconfirmedTrips ? "х" : "+"}

@@ -7,7 +7,7 @@ import { USER_SESSION_KEY } from "./constants";
 import { useDispatch } from "react-redux";
 import { setUser } from "./store/slice/index";
 import { RoutesContainer } from "./routes";
-import { UnconfirmedContext } from "./context";
+import { AuthModalContext, PriceModalContext, UnconfirmedContext } from "./context";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,16 +27,13 @@ function App() {
   return (
     <div className="app">
       <UnconfirmedContext value={{ unconfirmedTrips: unconfirmedTrips, setUnconfirmedTrips: setUnconfirmedTrips }}>
-        <Header setAuthModal={setAuthModal} setIsRegister={setIsRegister} />
-        <AuthModal isRegister={isRegister} show={authModalShow} onHide={() => setAuthModal(false)} />
-        <RoutesContainer
-          authModalHide={authModalHide}
-          authModalView={authModalView}
-          priceModalState={priceModalState}
-          setPriceModalState={setPriceModalState}
-          tripEdit={tripEdit}
-          setTripEdit={setTripEdit}
-        />
+        <AuthModalContext value={{ authModalView: authModalView, authModalHide: authModalHide }}>
+          <Header setIsRegister={setIsRegister} />
+          <AuthModal isRegister={isRegister} show={authModalShow} />
+          <PriceModalContext value={{ priceModalState: priceModalState, setPriceModalState: setPriceModalState }}>
+            <RoutesContainer tripEdit={tripEdit} setTripEdit={setTripEdit} />
+          </PriceModalContext>
+        </AuthModalContext>
       </UnconfirmedContext>
       <Footer />
     </div>

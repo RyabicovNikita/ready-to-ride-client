@@ -1,6 +1,6 @@
 import "../Trip/Trip.scss";
 import "./EditTrip.scss";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { getTripByID, updateTrip } from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { Button, Container } from "react-bootstrap";
@@ -12,12 +12,15 @@ import { logoutUserFromStore, selectUser } from "../../store";
 
 import { CITIES, TRIP_STATUSES, USER_SESSION_KEY } from "../../constants";
 import { getTripPrePrice } from "../../utils";
+import { AuthModalContext } from "../../context";
 
-export const EditTrip = ({ authModalView, setTripEdit }) => {
+export const EditTrip = ({ setTripEdit }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [headerColor, setHeaderColor] = useState("white");
+
+  const { authModalView } = useContext(AuthModalContext);
 
   const { error, resetError, handleError } = useError();
   const { loading, hideLoader, showLoader } = useLoader();

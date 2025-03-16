@@ -1,15 +1,9 @@
 import { LOCAL_TRIPS } from "../constants";
 
-export const addUnconfirmedTrip = ({
-  unconfirmedTrips,
-  setUnconfirmedTrips,
-  setPriceModalState,
-  curTripID,
-  passenger,
-}) => {
+export const addUnconfirmedTrip = ({ unconfirmedTrips, setUnconfirmedTrips, priceModalView, curTripID, passenger }) => {
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === curTripID);
   if (!isUnconfirmedTrips) {
-    setPriceModalState({ id: curTripID, isActive: true, passengerPrice: passenger.price });
+    priceModalView({ id: curTripID, passengerPrice: passenger.price });
   } else {
     let tripsArr = localStorage.getItem(LOCAL_TRIPS);
     if (!tripsArr) return;

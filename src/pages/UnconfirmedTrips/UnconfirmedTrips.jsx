@@ -6,15 +6,16 @@ import { useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserFromStore, selectUser } from "../../store";
 import { useNavigate } from "react-router";
-import { UnconfirmedContext } from "../../context";
+import { AuthModalContext, UnconfirmedContext } from "../../context";
 import { USER_SESSION_KEY } from "../../constants";
 import { RequiredModal } from "./components";
 
-export const UnconfirmedTrips = ({ authModalHide, authModalView }) => {
+export const UnconfirmedTrips = () => {
   const { loading, hideLoader, showLoader } = useLoader();
   const [uncofirmedError, setUncofirmedError] = useState(null);
   const [unconfirmedTrips, setUnconfirmedTrips] = useState([]);
   const { unconfirmedTrips: unconfirmedTripIDs } = useContext(UnconfirmedContext);
+  const { authModalView } = useContext(AuthModalContext);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();

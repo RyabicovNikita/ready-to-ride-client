@@ -2,18 +2,18 @@ import "./Trip.scss";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../api";
 import { Link, useNavigate, useParams } from "react-router";
-import { Button, Container, NavLink } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import { useError, useLoader } from "../../hooks";
 import { ConfirmModal, Error, Loader, MgContainer } from "../../components";
 import { UserInfoCard } from "./components";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserFromStore, selectUser } from "../../store";
 import { addUnconfirmedTrip, getTripPrePrice } from "../../utils";
-import { UnconfirmedContext } from "../../context";
+import { AuthModalContext, UnconfirmedContext } from "../../context";
 import { ROLES, TRIP_STATUSES, USER_SESSION_KEY } from "../../constants";
 import { PriceModal } from "../Trips/components";
 
-export const Trip = ({ setPriceModalState, priceModalState, authModalView, setTripEdit }) => {
+export const Trip = ({ setTripEdit }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [confirmModalState, setConfirmModalState] = useState("");
@@ -22,6 +22,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView, setTr
   const modalShow = () => setConfirmModalShow(true);
   const modalHide = () => setConfirmModalShow(false);
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
+  const { authModalView } = useContext(AuthModalContext);
   const { error, resetError, handleError } = useError();
   const { loading, hideLoader, showLoader } = useLoader();
   let { id } = useParams();
@@ -162,7 +163,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView, setTr
         }}
       >
         <Container className="trip" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
-          <PriceModal show={priceModalState} modalState={priceModalState} setModalState={setPriceModalState} />
+          <PriceModal />
           <ConfirmModal show={confirmModalShow} modalHide={modalHide} data={confirmModalState} />
           {error && (
             <Error>
@@ -283,7 +284,6 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView, setTr
                         addUnconfirmedTrip({
                           curTripID: id,
                           passenger: trip.creator,
-                          setPriceModalState,
                           setUnconfirmedTrips,
                           unconfirmedTrips,
                         })

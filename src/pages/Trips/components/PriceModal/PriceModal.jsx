@@ -1,17 +1,16 @@
 import * as yup from "yup";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { UnconfirmedContext } from "../../../../context";
-import { useError, useLoader } from "../../../../hooks";
-import { Error, Loader } from "../../../../components";
+import { Error } from "../../../../components";
 import { LOCAL_TRIPS } from "../../../../constants";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { usePriceModalContext } from "../../../../hooks";
 
-export const PriceModal = ({ modalState, setModalState }) => {
-  const { error, handleError } = useError();
-  const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
-  const { loading, hideLoader, showLoader } = useLoader();
+export const PriceModal = () => {
+  const { setUnconfirmedTrips } = useContext(UnconfirmedContext);
+  const { priceModalState: modalState, priceModalHide: hide } = usePriceModalContext();
   const handleAccept = ({ driverPrice }) => {
     let tripsArr = localStorage.getItem(LOCAL_TRIPS);
     if (tripsArr) tripsArr = JSON.parse(tripsArr);
@@ -29,7 +28,7 @@ export const PriceModal = ({ modalState, setModalState }) => {
       localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripsArr));
     }
     setUnconfirmedTrips((prevState) => [...prevState, { id: modalState.id, driverPrice: driverPrice }]);
-    setModalState({ isActive: false });
+    hide();
   };
   const handleCancel = () => {
     let tripsArr = localStorage.getItem(LOCAL_TRIPS);
@@ -40,7 +39,7 @@ export const PriceModal = ({ modalState, setModalState }) => {
       localStorage.setItem(LOCAL_TRIPS, JSON.stringify(tripsArr));
     }
     setUnconfirmedTrips((prevState) => prevState.filter((i) => i.id !== modalState.id));
-    setModalState({ isActive: false });
+    hide();
   };
   const passengerPrice = Number(modalState?.passengerPrice);
   const shapeObject = {
@@ -66,21 +65,14 @@ export const PriceModal = ({ modalState, setModalState }) => {
 
   return (
     <div className="d-flex justify-content-center w-100">
-      {loading && <Loader />}
-      <Modal
-        show={!!modalState?.isActive}
-        onHide={() => setModalState({ isActive: false })}
-        backdrop="static"
-        keyboard={false}
-      >
+      <Modal show={!!modalState?.isActive} onHide={hide} backdrop="static" keyboard={false}>
         <Modal.Header closeButton>
           <Modal.Title>Стоимость</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form id="driverPriceForm" onSubmit={handleSubmit(handleAccept)}>
-            {(error || errors?.driverPrice?.message) && <Error> {error || errors?.driverPrice?.message}</Error>}
+            {errors?.driverPrice?.message && <Error> {errors?.driverPrice?.message}</Error>}
             <p htmlFor="driverPrice">Введите своё предложение стоимости поездки</p>
-
             <input
               id="driverPrice"
               name="driverPrice"

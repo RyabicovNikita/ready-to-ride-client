@@ -13,22 +13,23 @@ import { LOCAL_TRIPS, USER_SESSION_KEY } from "../../constants";
 import { MgContainer } from "../../core/UI";
 import { useNavigate } from "react-router";
 import { useContext, useEffect } from "react";
-import { UnconfirmedContext } from "../../context";
+import { AuthModalContext, UnconfirmedContext } from "../../context";
 import { HeaderButton } from "../Button";
 
-export const Header = ({ setAuthModal, setIsRegister }) => {
+export const Header = ({ setIsRegister }) => {
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
+  const { authModalView } = useContext(AuthModalContext);
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
   const onRegisterClick = () => {
     setIsRegister(true);
-    setAuthModal(true);
+    authModalView();
   };
   const onLoginClick = () => {
     setIsRegister(false);
-    setAuthModal(true);
+    authModalView();
   };
   const onLogoutClick = async () => {
     await logoutUser();

@@ -1,5 +1,5 @@
 import "./Trips.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Error, Loader, TripCard } from "../../components";
 import { getTrips } from "../../api";
 import { useError, useLoader } from "../../hooks";
@@ -11,10 +11,13 @@ import { useForm } from "react-hook-form";
 import { filteredTripFormParams } from "../../utils/yup/formParams";
 import { Card } from "react-bootstrap";
 import { PriceModal } from "./components";
+import { AuthModalContext } from "../../context";
 
-export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceModalState }) => {
+export const Trips = ({ onlyUserTrips }) => {
   const [isFilter, setIsFilter] = useState(false);
   const [filter, setFilter] = useState();
+
+  const { authModalView } = useContext(AuthModalContext);
 
   const { loading, showLoader, hideLoader } = useLoader();
 
@@ -83,7 +86,7 @@ export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceM
   return (
     <div className="d-flex flex-column gap-3 h-100">
       {loading && <Loader />}
-      <PriceModal show={priceModalState} modalState={priceModalState} setModalState={setPriceModalState} />
+      <PriceModal />
       <div className="trips card" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
         <div className="d-flex flex-column align-items-center">
           <div class="card mt-5">
@@ -253,8 +256,6 @@ export const Trips = ({ onlyUserTrips, authModalView, priceModalState, setPriceM
                 fromWhere={trip.fromWhere}
                 toWhere={trip.toWhere}
                 passengersNumber={trip.passengersNumber}
-                priceModalState={priceModalState}
-                setPriceModalState={setPriceModalState}
                 status={trip.status}
               />
             ))

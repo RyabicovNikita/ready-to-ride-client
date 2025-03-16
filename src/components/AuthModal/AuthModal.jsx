@@ -1,8 +1,7 @@
 import { Button, Form } from "react-bootstrap";
-
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { USER_SESSION_KEY } from "../../constants";
 import { setUser } from "../../store/slice";
 import { useDispatch } from "react-redux";
@@ -10,14 +9,14 @@ import { authUser } from "../../api";
 import { useError } from "../../hooks";
 import { getFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
-import { ActionButton, HeaderButton } from "../Button";
 import { Error } from "../Error";
+import { AuthModalContext } from "../../context";
 
-export const AuthModal = ({ show, onHide, isRegister }) => {
+export const AuthModal = ({ show, isRegister }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error, handleError, resetError } = useError();
-
+  const { authModalHide } = useContext(AuthModalContext);
   const {
     register,
     reset,
@@ -41,7 +40,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
     sessionStorage.setItem(USER_SESSION_KEY, JSON.stringify(user));
     dispatch(setUser(user));
     reset();
-    onHide();
+    authModalHide();
     navigate(-1);
   };
 
@@ -55,7 +54,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
   }, [errors]);
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={authModalHide}>
       <Modal.Header>
         <Modal.Title>{isRegister ? "Регистрация" : "Авторизация"}</Modal.Title>
       </Modal.Header>
@@ -157,7 +156,7 @@ export const AuthModal = ({ show, onHide, isRegister }) => {
             </>
           )}
           <Modal.Footer>
-            <Button variant="secondary" onClick={onHide}>
+            <Button variant="secondary" onClick={authModalHide}>
               Отмена
             </Button>
             <Button className="bg-dark border-dark" disabled={!!error} type="submit" variant="primary">
