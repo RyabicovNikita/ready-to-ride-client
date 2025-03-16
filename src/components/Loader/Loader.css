@@ -1,0 +1,29 @@
+.loader-contain {
+  width: 250px;
+  height: 250px;
+  background-image: url("../../images/road.png");
+  background-size: contain;
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  z-index: 2;
+  animation: reverseSpin 7s linear infinite;
+}
+.loader {
+  width: 250px;
+  height: 250px;
+  background-image: url("../../images/car.png");
+  background-size: contain;
+
+  left: 50%;
+  bottom: 50%;
+  z-index: 2;
+  animation: spin 1s linear infinite;
+}
+
+.loader-background {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 9999;
+}

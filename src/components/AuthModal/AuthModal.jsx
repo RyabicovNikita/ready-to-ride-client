@@ -11,7 +11,7 @@ import { getFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
 import { Error } from "../Error";
 import { AuthModalContext } from "../../context";
-import { FormCheckbox, FormInput } from "./components";
+import { FormCheckbox, FormInput } from "../Form";
 import { INPUT_NAMES } from "./constants";
 
 export const AuthModal = ({ show, isRegister }) => {
@@ -55,13 +55,13 @@ export const AuthModal = ({ show, isRegister }) => {
     handleError(errors);
   }, [errors]);
 
-  const getRegProps = (propName) => ({
+  const getRegProps = (propName, resetError) => ({
     ...register(propName, {
       onChange: resetError,
     }),
   });
 
-  const getError = (propName) => errors?.[propName]?.message;
+  const getError = (propName, errors) => errors?.[propName]?.message;
 
   return (
     <Modal show={show} onHide={authModalHide}>

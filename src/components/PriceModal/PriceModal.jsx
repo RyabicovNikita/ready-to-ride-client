@@ -9,6 +9,7 @@ import { UnconfirmedContext } from "../../context";
 import { Error } from "../Error";
 import { LOCAL_TRIPS } from "../../constants";
 import { usePriceModalContext } from "../../hooks";
+import { FormInput } from "../Form";
 
 export const PriceModal = () => {
   const { setUnconfirmedTrips } = useContext(UnconfirmedContext);
@@ -65,6 +66,16 @@ export const PriceModal = () => {
     formState: { errors },
   } = useForm(formParams);
 
+  const getRegProps = (propName) => ({
+    ...register(propName, {
+      onChange: reset,
+    }),
+  });
+
+  const getError = (propName) => errors?.[propName]?.message;
+
+  const priceError = getError("driverPrice");
+
   return (
     <div className="d-flex justify-content-center w-100">
       <Modal show={!!modalState?.isActive} onHide={hide} backdrop="static" keyboard={false}>
@@ -73,18 +84,16 @@ export const PriceModal = () => {
         </Modal.Header>
         <Modal.Body>
           <form id="driverPriceForm" onSubmit={handleSubmit(handleAccept)}>
-            {errors?.driverPrice?.message && <Error> {errors?.driverPrice?.message}</Error>}
-            <p htmlFor="driverPrice">Введите своё предложение стоимости поездки</p>
-            <input
-              id="driverPrice"
-              name="driverPrice"
+            {priceError && <Error> {priceError}</Error>}
+            <FormInput
+              key={"driverPrice"}
+              placeholder={0}
+              props={{ ...getRegProps("driverPrice"), defaultValue: modalState?.passengerPrice }}
+              error={priceError}
               type="number"
-              placeholder="0"
-              defaultValue={modalState?.passengerPrice}
-              {...register("driverPrice", {
-                onChange: reset,
-              })}
-            />
+            >
+              Введите своё предложение стоимости поездки
+            </FormInput>
           </form>
           <Modal.Footer style={{ marginTop: "20px", color: "#046e1e" }}>
             Предложенная пассажиром цена: {modalState?.passengerPrice}

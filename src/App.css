@@ -3,27 +3,13 @@
   display: flex;
   flex-direction: column;
 }
-.loader-contain {
-  width: 250px;
-  height: 250px;
-  background-image: url("./images/road.png");
-  background-size: contain;
-  position: absolute;
-  left: 50%;
-  bottom: 50%;
-  z-index: 2;
-  animation: reverseSpin 7s linear infinite;
-}
-.loader {
-  width: 250px;
-  height: 250px;
-  background-image: url("./images/car.png");
-  background-size: contain;
 
-  left: 50%;
-  bottom: 50%;
-  z-index: 2;
-  animation: spin 1s linear infinite;
+.non-border {
+  border-radius: 0;
+}
+
+.non-effects-hover:hover {
+  background-color: inherit;
 }
 
 @keyframes spin {
