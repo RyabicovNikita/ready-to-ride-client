@@ -12,13 +12,13 @@ export const addDriverInTrips = (tripsData, driverID) =>
 
 export const getTripByID = (id) => request(`trips/${id}`);
 
-export const confirmDriver = (tripID, totalPrice) => request("trips/confirmDriver", "POST", { id: tripID, totalPrice });
+export const confirmDriver = (tripID, totalPrice) => request("trips/confirmDriver", "PATCH", { id: tripID, totalPrice });
 
-export const cancelTrip = (id) => request("trips/cancelTrip", "POST", { id });
+export const cancelTrip = (id) => request("trips/cancelTrip", "PATCH", { id });
 
 export const looseDriver = (tripID) => request("trips/looseDriver", "DELETE", { id: tripID });
 
 export const updateTrip = ({ fromWhere, toWhere, passengerPrice, numberPeople, tripID }) =>
-  request(`trips/${tripID}/edit`, "POST", { fromWhere, toWhere, passengerPrice, numberPeople });
+  request(`trips/${tripID}`, "PATCH", { fromWhere, toWhere, passengerPrice, numberPeople });
 
-export const deleteTrip = (id) => request(`trips/${id}/delete`, "DELETE");
+export const deleteTrip = (id) => request(`trips/${id}`, "DELETE");

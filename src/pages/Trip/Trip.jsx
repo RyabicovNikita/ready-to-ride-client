@@ -1,5 +1,5 @@
 import "./Trip.scss";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../api";
 import { Link, useNavigate, useParams } from "react-router";
 import { Button, Container, NavLink } from "react-bootstrap";
@@ -8,12 +8,12 @@ import { ConfirmModal, Error, Loader, MgContainer } from "../../components";
 import { UserInfoCard } from "./components";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserFromStore, selectUser } from "../../store";
-import { addUnconfirmedTrip } from "../../utils";
+import { addUnconfirmedTrip, getTripPrePrice } from "../../utils";
 import { UnconfirmedContext } from "../../context";
 import { ROLES, TRIP_STATUSES, USER_SESSION_KEY } from "../../constants";
 import { PriceModal } from "../Trips/components";
 
-export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => {
+export const Trip = ({ setPriceModalState, priceModalState, authModalView, setTripEdit }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [confirmModalState, setConfirmModalState] = useState("");
@@ -31,17 +31,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => 
 
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
 
-  const getPrePrice = () => {
-    const driverPrice = Number(trip?.driver?.price ?? 0);
-    const passengerPrice = Number(trip?.creator?.price ?? 0);
-
-    if (driverPrice === 0 || isNaN(driverPrice)) {
-      if (passengerPrice === 0 || isNaN(passengerPrice)) return 0;
-      return passengerPrice;
-    }
-
-    return (driverPrice + passengerPrice) / 2;
-  };
+  const prePrice = useMemo(() => getTripPrePrice(trip), [trip]);
 
   useEffect(() => {
     showLoader();
@@ -78,8 +68,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => 
   }, [trip.status]);
 
   const onConfirmDriver = () => {
-    const calcTotalPrice = getPrePrice();
-    confirmDriver(id, calcTotalPrice).then((res) => {
+    confirmDriver(id, prePrice).then((res) => {
       if (res.error) {
         let timeOutID;
         handleError(res.error);
@@ -95,7 +84,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => 
         }
         return;
       }
-      setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.READY.text, totalPrice: calcTotalPrice }));
+      setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.READY.text, totalPrice: prePrice }));
     });
   };
   const onLooseDriver = () => {
@@ -265,7 +254,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => 
                       </Button>
                     )}
                   {trip?.creator?.id === userID && trip?.status === TRIP_STATUSES.NEW.text && (
-                    <Link to={"edit"} className="btn bg-dark text-light border-dark p-3">
+                    <Link className="btn bg-dark text-light border-dark p-3" onClick={() => setTripEdit(true)}>
                       Редактировать поездку
                     </Link>
                   )}
@@ -283,7 +272,7 @@ export const Trip = ({ setPriceModalState, priceModalState, authModalView }) => 
                     ) : (
                       <div className="d-flex flex-column">
                         <span>Стоимость в обсуждении...</span>
-                        <span className="trip__userCard-price">Предварительно {getPrePrice()} ₽</span>
+                        <span className="trip__userCard-price">Предварительно {prePrice} ₽</span>
                       </div>
                     )}
                   </div>

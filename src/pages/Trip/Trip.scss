@@ -30,6 +30,9 @@
     width: 100%;
     z-index: -1;
   }
+  &__userCard-price {
+    text-align: end;
+  }
   &__cities {
     display: flex;
     gap: 10px;
@@ -58,6 +61,7 @@
       &-container {
         display: flex;
         flex-direction: column;
+        justify-content: flex-end;
       }
     }
   }

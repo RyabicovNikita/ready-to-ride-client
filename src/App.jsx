@@ -15,6 +15,7 @@ function App() {
   const [priceModalState, setPriceModalState] = useState(false);
   const [unconfirmedTrips, setUnconfirmedTrips] = useState([]);
   const [isRegister, setIsRegister] = useState(false);
+  const [tripEdit, setTripEdit] = useState(false);
   useLayoutEffect(() => {
     const currentUserDataJSON = sessionStorage.getItem(USER_SESSION_KEY);
     if (!currentUserDataJSON) return;
@@ -33,6 +34,8 @@ function App() {
           authModalView={authModalView}
           priceModalState={priceModalState}
           setPriceModalState={setPriceModalState}
+          tripEdit={tripEdit}
+          setTripEdit={setTripEdit}
         />
       </UnconfirmedContext>
       <Footer />

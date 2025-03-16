@@ -1,6 +1,6 @@
 import "../Trip/Trip.scss";
 import "./EditTrip.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getTripByID, updateTrip } from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { Button, Container } from "react-bootstrap";
@@ -11,8 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUserFromStore, selectUser } from "../../store";
 
 import { CITIES, TRIP_STATUSES, USER_SESSION_KEY } from "../../constants";
+import { getTripPrePrice } from "../../utils";
 
-export const EditTrip = ({ setPriceModalState, priceModalState, authModalView }) => {
+export const EditTrip = ({ authModalView, setTripEdit }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,17 +26,7 @@ export const EditTrip = ({ setPriceModalState, priceModalState, authModalView })
   const [trip, setTrip] = useState({});
   const { id: userID, isDriver } = useSelector(selectUser);
 
-  const getPrePrice = () => {
-    const driverPrice = Number(trip?.driver?.price ?? 0);
-    const passengerPrice = Number(trip?.creator?.price ?? 0);
-
-    if (driverPrice === 0 || isNaN(driverPrice)) {
-      if (passengerPrice === 0 || isNaN(passengerPrice)) return 0;
-      return passengerPrice;
-    }
-
-    return (driverPrice + passengerPrice) / 2;
-  };
+  const prePrice = useMemo(() => getTripPrePrice(trip), [trip]);
 
   useEffect(() => {
     showLoader();
@@ -60,12 +51,23 @@ export const EditTrip = ({ setPriceModalState, priceModalState, authModalView })
     });
   }, []);
 
+  const updateHeaderColor = () => {
+    if (!trip.status) return;
+    const status = Object.values(TRIP_STATUSES).find((status) => status.text === trip.status);
+
+    setHeaderColor(status?.color ?? "white");
+  };
+
+  useEffect(() => {
+    updateHeaderColor();
+  }, [trip.status]);
+
   const fieldsIsCorrected = (trip) => {
     if (!trip.fromWhere || trip.fromWhere === CITIES[0]) return "Выберите откуда планируете выезжать";
     if (!trip.toWhere || trip.toWhere === CITIES[0]) return "Выберите пункт назначения";
     if (trip.fromWhere === trip.toWhere) return "Выберите разные пункты";
   };
-  console.log(trip);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     const error = fieldsIsCorrected(trip);
@@ -86,11 +88,12 @@ export const EditTrip = ({ setPriceModalState, priceModalState, authModalView })
       handleError(res.error);
       return;
     }
-    navigate(-1);
+    setTripEdit(false);
   };
 
   const onInputChange = (propName, newValue) => {
     resetError();
+
     setTrip((prevState) => ({ ...prevState, [propName]: newValue }));
   };
 
@@ -117,7 +120,7 @@ export const EditTrip = ({ setPriceModalState, priceModalState, authModalView })
                       aria-label="Sizing example input"
                       aria-describedby="inputGroup-sizing-default"
                       value={trip?.fromWhere}
-                      onChange={({ target }) => onInputChange("fromWhere", Number(target.value))}
+                      onChange={({ target }) => onInputChange("fromWhere", target.value)}
                     >
                       {CITIES.map((city) => (
                         <option>{city}</option>
@@ -131,7 +134,7 @@ export const EditTrip = ({ setPriceModalState, priceModalState, authModalView })
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default"
                     value={trip?.toWhere}
-                    onChange={({ target }) => onInputChange("toWhere", Number(target.value))}
+                    onChange={({ target }) => onInputChange("toWhere", target.value)}
                   >
                     {CITIES.map((city) => (
                       <option>{city}</option>
@@ -209,7 +212,12 @@ export const EditTrip = ({ setPriceModalState, priceModalState, authModalView })
                   <i class="bi bi-people-fill"></i>
                 </div>
               </div>
-              <Button className="btn-danger" onClick={() => navigate(-1)}>
+              <Button
+                className="btn-danger"
+                onClick={() => {
+                  setTripEdit(false);
+                }}
+              >
                 Отменить
               </Button>
               <Button className="btn-success" type="submit">
@@ -217,14 +225,10 @@ export const EditTrip = ({ setPriceModalState, priceModalState, authModalView })
               </Button>
               <div className="trip__footer-totalPrice">
                 <div className="trip__footer-totalPrice-container">
-                  {trip.totalPrice > 0 ? (
-                    trip.totalPrice + " ₽"
-                  ) : (
-                    <div className="d-flex flex-column">
-                      <span>Стоимость в обсуждении...</span>
-                      <span className="trip__userCard-price">Предварительно {getPrePrice()} ₽</span>
-                    </div>
-                  )}
+                  <div className="d-flex flex-column align-items-end">
+                    <span>Стоимость в обсуждении...</span>
+                    <span className="trip__userCard-price prePrice">Предварительно {prePrice} ₽</span>
+                  </div>
                 </div>
               </div>
             </div>

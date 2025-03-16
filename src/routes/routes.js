@@ -2,7 +2,14 @@ import { Route, Routes } from "react-router";
 import { Main, UnconfirmedTrips, NewTrip, Trip, Trips, AboutUs, EditTrip } from "../pages";
 import { FullScreenContainer } from "../core/UI";
 
-export const RoutesContainer = ({ authModalHide, authModalView, priceModalState, setPriceModalState }) => (
+export const RoutesContainer = ({
+  authModalHide,
+  authModalView,
+  priceModalState,
+  setPriceModalState,
+  tripEdit,
+  setTripEdit,
+}) => (
   <Routes>
     <Route
       path="/"
@@ -41,28 +48,29 @@ export const RoutesContainer = ({ authModalHide, authModalView, priceModalState,
         </FullScreenContainer>
       }
     />
+
+    <Route path="/aboutUs" element={<AboutUs />} />
     <Route
       path="/trips/:id"
       element={
         <FullScreenContainer>
-          <Trip
-            priceModalState={priceModalState}
-            setPriceModalState={setPriceModalState}
-            authModalView={authModalView}
-          />
+          {tripEdit ? (
+            <EditTrip
+              authModalHide={authModalHide}
+              authModalView={authModalView}
+              priceModalState={priceModalState}
+              setPriceModalState={setPriceModalState}
+              setTripEdit={setTripEdit}
+            />
+          ) : (
+            <Trip
+              priceModalState={priceModalState}
+              setPriceModalState={setPriceModalState}
+              authModalView={authModalView}
+              setTripEdit={setTripEdit}
+            />
+          )}
         </FullScreenContainer>
-      }
-    />
-    <Route path="/aboutUs" element={<AboutUs />} />
-    <Route
-      path="/trips/:id/edit"
-      element={
-        <EditTrip
-          authModalHide={authModalHide}
-          authModalView={authModalView}
-          priceModalState={priceModalState}
-          setPriceModalState={setPriceModalState}
-        />
       }
     />
   </Routes>
