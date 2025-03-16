@@ -63,7 +63,13 @@ export const TripCard = ({
           data-type="button"
           className={`trip-card__linkDriverBtn btn btn-${isUnconfirmedTrips ? "danger" : "primary"}`}
           onClick={() =>
-            addUnconfirmedTrip({ curTripID: id, passenger, priceModalView, setUnconfirmedTrips, unconfirmedTrips })
+            addUnconfirmedTrip({
+              curTripID: id,
+              passenger,
+              priceModalView: priceModalView,
+              setUnconfirmedTrips,
+              unconfirmedTrips,
+            })
           }
         >
           {isUnconfirmedTrips ? "х" : "+"}

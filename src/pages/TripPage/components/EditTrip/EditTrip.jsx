@@ -1,18 +1,17 @@
-import "../Trip/Trip.scss";
+import "../MainTrip/Trip.scss";
 import "./EditTrip.scss";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { getTripByID, updateTrip } from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { Button, Container } from "react-bootstrap";
-import { useError, useLoader } from "../../hooks";
-import { Error, Loader, MgContainer } from "../../components";
-import { UserInfoCard } from "../Trip/components";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUserFromStore, selectUser } from "../../store";
-
-import { CITIES, TRIP_STATUSES, USER_SESSION_KEY } from "../../constants";
-import { getTripPrePrice } from "../../utils";
-import { AuthModalContext } from "../../context";
+import { useDispatch } from "react-redux";
+import { getTripByID, updateTrip } from "../../../../api";
+import { useError, useLoader } from "../../../../hooks";
+import { Error, Loader, MgContainer } from "../../../../components";
+import { UserInfoCard } from "../UserInfoCard";
+import { logoutUserFromStore } from "../../../../store";
+import { CITIES, TRIP_STATUSES, USER_SESSION_KEY } from "../../../../constants";
+import { getTripPrePrice } from "../../../../utils";
+import { AuthModalContext } from "../../../../context";
 
 export const EditTrip = ({ setTripEdit }) => {
   const dispatch = useDispatch();
@@ -27,7 +26,6 @@ export const EditTrip = ({ setTripEdit }) => {
   let { id } = useParams();
   id = Number(id);
   const [trip, setTrip] = useState({});
-  const { id: userID, isDriver } = useSelector(selectUser);
 
   const prePrice = useMemo(() => getTripPrePrice(trip), [trip]);
 

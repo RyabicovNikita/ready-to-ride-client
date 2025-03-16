@@ -1,12 +1,14 @@
 import * as yup from "yup";
 import { useContext } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { UnconfirmedContext } from "../../../../context";
-import { Error } from "../../../../components";
-import { LOCAL_TRIPS } from "../../../../constants";
+
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { usePriceModalContext } from "../../../../hooks";
+
+import { UnconfirmedContext } from "../../context";
+import { Error } from "../Error";
+import { LOCAL_TRIPS } from "../../constants";
+import { usePriceModalContext } from "../../hooks";
 
 export const PriceModal = () => {
   const { setUnconfirmedTrips } = useContext(UnconfirmedContext);

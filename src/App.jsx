@@ -15,7 +15,7 @@ function App() {
   const [priceModalState, setPriceModalState] = useState(false);
   const [unconfirmedTrips, setUnconfirmedTrips] = useState([]);
   const [isRegister, setIsRegister] = useState(false);
-  const [tripEdit, setTripEdit] = useState(false);
+
   useLayoutEffect(() => {
     const currentUserDataJSON = sessionStorage.getItem(USER_SESSION_KEY);
     if (!currentUserDataJSON) return;
@@ -31,7 +31,7 @@ function App() {
           <Header setIsRegister={setIsRegister} />
           <AuthModal isRegister={isRegister} show={authModalShow} />
           <PriceModalContext value={{ priceModalState: priceModalState, setPriceModalState: setPriceModalState }}>
-            <RoutesContainer tripEdit={tripEdit} setTripEdit={setTripEdit} />
+            <RoutesContainer />
           </PriceModalContext>
         </AuthModalContext>
       </UnconfirmedContext>

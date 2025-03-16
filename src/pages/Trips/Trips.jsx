@@ -1,6 +1,6 @@
 import "./Trips.scss";
 import { useContext, useEffect, useState } from "react";
-import { Error, Loader, TripCard } from "../../components";
+import { Error, Loader, PriceModal, TripCard } from "../../components";
 import { getTrips } from "../../api";
 import { useError, useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,6 @@ import { CITIES, SELECTED_VALUES, USER_SESSION_KEY } from "../../constants";
 import { useForm } from "react-hook-form";
 import { filteredTripFormParams } from "../../utils/yup/formParams";
 import { Card } from "react-bootstrap";
-import { PriceModal } from "./components";
 import { AuthModalContext } from "../../context";
 
 export const Trips = ({ onlyUserTrips }) => {

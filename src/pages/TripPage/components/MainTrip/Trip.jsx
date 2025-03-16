@@ -1,17 +1,16 @@
 import "./Trip.scss";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../api";
 import { Link, useNavigate, useParams } from "react-router";
 import { Button, Container } from "react-bootstrap";
-import { useError, useLoader } from "../../hooks";
-import { ConfirmModal, Error, Loader, MgContainer } from "../../components";
-import { UserInfoCard } from "./components";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUserFromStore, selectUser } from "../../store";
-import { addUnconfirmedTrip, getTripPrePrice } from "../../utils";
-import { AuthModalContext, UnconfirmedContext } from "../../context";
-import { ROLES, TRIP_STATUSES, USER_SESSION_KEY } from "../../constants";
-import { PriceModal } from "../Trips/components";
+import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../../../api";
+import { useError, useLoader, usePriceModalContext } from "../../../../hooks";
+import { ConfirmModal, Error, Loader, MgContainer, PriceModal } from "../../../../components";
+import { UserInfoCard } from "../UserInfoCard";
+import { logoutUserFromStore, selectUser } from "../../../../store";
+import { addUnconfirmedTrip, getTripPrePrice } from "../../../../utils";
+import { AuthModalContext, UnconfirmedContext } from "../../../../context";
+import { ROLES, TRIP_STATUSES, USER_SESSION_KEY } from "../../../../constants";
 
 export const Trip = ({ setTripEdit }) => {
   const dispatch = useDispatch();
@@ -22,6 +21,7 @@ export const Trip = ({ setTripEdit }) => {
   const modalShow = () => setConfirmModalShow(true);
   const modalHide = () => setConfirmModalShow(false);
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
+  const { priceModalView } = usePriceModalContext();
   const { authModalView } = useContext(AuthModalContext);
   const { error, resetError, handleError } = useError();
   const { loading, hideLoader, showLoader } = useLoader();
@@ -284,6 +284,7 @@ export const Trip = ({ setTripEdit }) => {
                         addUnconfirmedTrip({
                           curTripID: id,
                           passenger: trip.creator,
+                          priceModalView: priceModalView,
                           setUnconfirmedTrips,
                           unconfirmedTrips,
                         })
