@@ -8,7 +8,6 @@ import { useError } from "../../hooks";
 import { useEffect } from "react";
 import { tripFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
-import background from "../../images/backgroundRR.jpg";
 import { DateTime } from "luxon";
 
 export const NewTrip = () => {
@@ -18,7 +17,7 @@ export const NewTrip = () => {
   const navigate = useNavigate();
   const {
     register,
-    reset,
+
     handleSubmit,
     formState: { errors },
   } = useForm(tripFormParams);

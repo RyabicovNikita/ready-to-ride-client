@@ -55,14 +55,14 @@ export const AuthModal = ({ show, isRegister }) => {
     handleError(errors);
   }, [errors]);
 
-  const getRegProps = (propName, resetError) => ({
+  const getRegProps = (propName) => ({
     ...register(propName, {
       onChange: resetError,
     }),
   });
 
   const getError = (propName, errors) => errors?.[propName]?.message;
-
+  console.log(errors);
   return (
     <Modal show={show} onHide={authModalHide}>
       <Modal.Header>

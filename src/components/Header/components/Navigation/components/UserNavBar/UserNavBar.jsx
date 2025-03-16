@@ -1,7 +1,7 @@
-import { NavLink } from "react-bootstrap";
 import { HeaderButton } from "../../../../../Button";
 import { useContext } from "react";
 import { UnconfirmedContext } from "../../../../../../context";
+import { Link } from "react-router";
 
 export const UserNavBar = ({ isDriver }) => {
   const { unconfirmedTrips } = useContext(UnconfirmedContext);
@@ -19,9 +19,9 @@ export const UserNavBar = ({ isDriver }) => {
   ) : (
     <>
       <HeaderButton to={window.location.origin + "/trips"}>Поездки</HeaderButton>
-      <NavLink to={window.location.origin + "/trips/new"}>
-        <div className="btn btn-dark w-100">Новая поездка</div>
-      </NavLink>
+      <Link to={window.location.origin + "/trips/new"}>
+        <span className="btn btn-dark w-100">Новая поездка</span>
+      </Link>
     </>
   );
 };
