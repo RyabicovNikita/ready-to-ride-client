@@ -1,38 +1,43 @@
 import "./Trip.scss";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router";
 import { Button, Container } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../../../api";
 import { useError, useLoader, usePriceModalContext } from "../../../../hooks";
 import { ConfirmModal, Error, Loader, MgContainer, PriceModal } from "../../../../components";
 import { UserInfoCard } from "../UserInfoCard";
 import { logoutUserFromStore, selectUser } from "../../../../store";
-import { addUnconfirmedTrip, getTripPrePrice } from "../../../../utils";
-import { AuthModalContext, UnconfirmedContext } from "../../../../context";
+import { addUnconfirmedTrip } from "../../../../utils";
+import { UnconfirmedContext } from "../../../../context";
 import { ROLES, TRIP_STATUSES, USER_SESSION_KEY } from "../../../../constants";
 
-export const Trip = ({ setTripEdit }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+export const Trip = ({
+  setTripEdit,
+  trip,
+  setTrip,
+  headerColor,
+  updateHeaderColor,
+  id,
+  authModalView,
+  prePrice,
+  navigate,
+  dispatch,
+}) => {
   const [confirmModalState, setConfirmModalState] = useState("");
   const [confirmModalShow, setConfirmModalShow] = useState(false);
-  const [headerColor, setHeaderColor] = useState("white");
+
   const modalShow = () => setConfirmModalShow(true);
   const modalHide = () => setConfirmModalShow(false);
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
   const { priceModalView } = usePriceModalContext();
-  const { authModalView } = useContext(AuthModalContext);
+
   const { error, resetError, handleError } = useError();
   const { loading, hideLoader, showLoader } = useLoader();
-  let { id } = useParams();
-  id = Number(id);
-  const [trip, setTrip] = useState({});
+
   const { id: userID, isDriver, role } = useSelector(selectUser);
 
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
-
-  const prePrice = useMemo(() => getTripPrePrice(trip), [trip]);
 
   useEffect(() => {
     showLoader();
@@ -56,13 +61,6 @@ export const Trip = ({ setTripEdit }) => {
       setTrip(res.body);
     });
   }, []);
-
-  const updateHeaderColor = () => {
-    if (!trip.status) return;
-    const status = Object.values(TRIP_STATUSES).find((status) => status.text === trip.status);
-
-    setHeaderColor(status?.color ?? "white");
-  };
 
   useEffect(() => {
     updateHeaderColor();

@@ -1,6 +1,6 @@
 import "./NewTrip.scss";
 import { useForm } from "react-hook-form";
-import { Error, FormInput, FormSelector, MgContainer } from "../../components";
+import { Error, FormSelector, MgContainer } from "../../components";
 import { CITIES, TRIP_PROPS } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addTripInStore, selectUser } from "../../store";
@@ -10,7 +10,7 @@ import { useCallback, useEffect } from "react";
 import { tripFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
 import { DateTime } from "luxon";
-import { Card, CardHeader, FloatingLabel, Form, FormSelect, InputGroup } from "react-bootstrap";
+import { Card, CardHeader, FloatingLabel, Form, InputGroup } from "react-bootstrap";
 import { getError } from "../../utils/yup";
 
 export const NewTrip = () => {
@@ -96,6 +96,8 @@ export const NewTrip = () => {
                 <Form.Control
                   name={TRIP_PROPS.PASS_PRICE}
                   type="number"
+                  min={1}
+                  max={99999}
                   className={`${getErrorByProp(TRIP_PROPS.PASS_PRICE) ? "is-invalid" : ""}`}
                   defaultValue={0}
                   {...register(TRIP_PROPS.PASS_PRICE, {
@@ -110,6 +112,8 @@ export const NewTrip = () => {
                   name={TRIP_PROPS.PEOPLES}
                   type="number"
                   placeholder="name@example.com"
+                  min={1}
+                  max={20}
                   className={`${getErrorByProp(TRIP_PROPS.PEOPLES) ? "is-invalid" : ""}`}
                   defaultValue={1}
                   {...register(TRIP_PROPS.PEOPLES, {

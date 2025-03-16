@@ -1,67 +1,27 @@
 import "../MainTrip/Trip.scss";
 import "./EditTrip.scss";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router";
 import { Button, Container } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { getTripByID, updateTrip } from "../../../../api";
+import { updateTrip } from "../../../../api";
 import { useError, useLoader } from "../../../../hooks";
-import { Error, Loader, MgContainer } from "../../../../components";
+import { Error, FormInput, FormSelector, Loader, MgContainer } from "../../../../components";
 import { UserInfoCard } from "../UserInfoCard";
+import { CITIES, TRIP_PROPS, USER_SESSION_KEY } from "../../../../constants";
+import { PassIcon } from "../Icons";
 import { logoutUserFromStore } from "../../../../store";
-import { CITIES, TRIP_STATUSES, USER_SESSION_KEY } from "../../../../constants";
-import { getTripPrePrice } from "../../../../utils";
-import { AuthModalContext } from "../../../../context";
 
-export const EditTrip = ({ setTripEdit }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [headerColor, setHeaderColor] = useState("white");
-
-  const { authModalView } = useContext(AuthModalContext);
-
+export const EditTrip = ({
+  setTripEdit,
+  trip,
+  setTrip,
+  headerColor,
+  id,
+  authModalView,
+  prePrice,
+  navigate,
+  dispatch,
+}) => {
   const { error, resetError, handleError } = useError();
-  const { loading, hideLoader, showLoader } = useLoader();
-  let { id } = useParams();
-  id = Number(id);
-  const [trip, setTrip] = useState({});
-
-  const prePrice = useMemo(() => getTripPrePrice(trip), [trip]);
-
-  useEffect(() => {
-    showLoader();
-    getTripByID(id).then((res) => {
-      hideLoader();
-      if (res.error) {
-        let timeOutID;
-        handleError(res.error);
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem(USER_SESSION_KEY);
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            authModalView();
-            resetError();
-          }, 3000);
-        }
-        return;
-      }
-      setTrip(res.body);
-    });
-  }, []);
-
-  const updateHeaderColor = () => {
-    if (!trip.status) return;
-    const status = Object.values(TRIP_STATUSES).find((status) => status.text === trip.status);
-
-    setHeaderColor(status?.color ?? "white");
-  };
-
-  useEffect(() => {
-    updateHeaderColor();
-  }, [trip.status]);
+  const { loading } = useLoader();
 
   const fieldsIsCorrected = (trip) => {
     if (!trip.fromWhere || trip.fromWhere === CITIES[0]) return "Выберите откуда планируете выезжать";
@@ -86,7 +46,18 @@ export const EditTrip = ({ setTripEdit }) => {
     });
 
     if (res.error) {
-      handleError(res.error);
+      if (res.error === "jwt expired") {
+        let timeOutID;
+        handleError(res.error);
+        sessionStorage.removeItem(USER_SESSION_KEY);
+        dispatch(logoutUserFromStore());
+        if (timeOutID) clearTimeout(timeOutID);
+        timeOutID = setTimeout(() => {
+          navigate("/login");
+          authModalView();
+          resetError();
+        }, 3000);
+      }
       return;
     }
     setTripEdit(false);
@@ -97,7 +68,6 @@ export const EditTrip = ({ setTripEdit }) => {
 
     setTrip((prevState) => ({ ...prevState, [propName]: newValue }));
   };
-
   return (
     <form onSubmit={onSubmit} className="editTrip">
       {loading && <Loader />}
@@ -114,37 +84,29 @@ export const EditTrip = ({ setTripEdit }) => {
               <div className="d-flex h-100 align-items-center">{trip.status}</div>
               <div className="trip__container">
                 <div className="trip__cities">
-                  <div class="mb-3">
-                    <select
-                      id="from-selector"
-                      className="form-select form-control"
-                      aria-label="Sizing example input"
-                      aria-describedby="inputGroup-sizing-default"
-                      value={trip?.fromWhere}
-                      onChange={({ target }) => onInputChange("fromWhere", target.value)}
-                    >
-                      {CITIES.map((city) => (
-                        <option>{city}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <i class="bi bi-arrow-right"></i>
-                  <select
-                    id="from-selector"
-                    className="form-select form-control"
-                    aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default"
-                    value={trip?.toWhere}
-                    onChange={({ target }) => onInputChange("toWhere", target.value)}
+                  <FormSelector
+                    key={TRIP_PROPS.FROM}
+                    error={error}
+                    options={CITIES}
+                    props={{
+                      value: trip?.fromWhere,
+                      onChange: ({ target }) => onInputChange("fromWhere", target.value),
+                    }}
                   >
-                    {CITIES.map((city) => (
-                      <option>{city}</option>
-                    ))}
-                  </select>
+                    Откуда
+                  </FormSelector>
+                  <i class="bi bi-arrow-right"></i>
+                  <FormSelector
+                    key={TRIP_PROPS.TO}
+                    error={error}
+                    options={CITIES}
+                    props={{ value: trip?.toWhere, onChange: ({ target }) => onInputChange("toWhere", target.value) }}
+                  >
+                    Куда
+                  </FormSelector>
                 </div>
               </div>
             </div>
-
             <div className="trip__content">
               <UserInfoCard
                 userName={trip?.driver?.userName ?? "Пока не найден"}
@@ -153,39 +115,26 @@ export const EditTrip = ({ setTripEdit }) => {
               />
               <div className="trip__userCard-content">
                 <div className="trip__userCard-name">
-                  {
-                    <div title="Пассажир">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-person-raised-hand"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6 6.207v9.043a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H6.236a1 1 0 0 1-.447-.106l-.33-.165A.83.83 0 0 1 5 2.488V.75a.75.75 0 0 0-1.5 0v2.083c0 .715.404 1.37 1.044 1.689L5.5 5c.32.32.5.754.5 1.207" />
-                        <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                      </svg>
-                    </div>
-                  }
+                  <PassIcon />
                   <span className="trip__userCard-name">{trip?.creator?.userName}</span>
                 </div>
-
                 <div className="trip__userCard-price">
                   <span> Предлагаемая цена</span>
-                  <input
+                  <FormInput
+                    key={TRIP_PROPS.PASS_PRICE}
+                    error={error}
                     type="number"
-                    class="form-control"
-                    id="exampleFormControlInput1"
-                    value={Number(trip?.creator?.price)}
-                    min={1}
-                    max={99999}
-                    onChange={({ target }) => {
-                      resetError();
-                      setTrip((prevState) => ({
-                        ...prevState,
-                        creator: { ...prevState.creator, price: Number(target.value) },
-                      }));
+                    props={{
+                      min: 1,
+                      max: 99999,
+                      defaultValue: trip?.creator?.price,
+                      onChange: ({ target }) => {
+                        resetError();
+                        setTrip((prevState) => ({
+                          ...prevState,
+                          creator: { ...prevState.creator, price: Number(target.value) },
+                        }));
+                      },
                     }}
                   />
                 </div>
@@ -201,15 +150,17 @@ export const EditTrip = ({ setTripEdit }) => {
             <div className="trip__footer">
               <div className="trip__footer-count">
                 <div className="trip__footer-pass-count">
-                  <input
+                  <FormInput
+                    key={TRIP_PROPS.PEOPLES}
                     type="number"
-                    class="form-control w-50"
-                    id="exampleFormControlInput1"
-                    value={trip.passengersNumber}
-                    min={1}
-                    max={99999}
-                    onChange={({ target }) => onInputChange("passengersNumber", Number(target.value))}
+                    props={{
+                      min: 1,
+                      max: 20,
+                      defaultValue: trip?.passengersNumber,
+                      onChange: ({ target }) => onInputChange("passengersNumber", Number(target.value)),
+                    }}
                   />
+
                   <i class="bi bi-people-fill"></i>
                 </div>
               </div>
