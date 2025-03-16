@@ -1,14 +1,17 @@
+import "./NewTrip.scss";
 import { useForm } from "react-hook-form";
-import { Error, MgContainer } from "../../components";
-import { CITIES } from "../../constants";
+import { Error, FormInput, FormSelector, MgContainer } from "../../components";
+import { CITIES, TRIP_PROPS } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addTripInStore, selectUser } from "../../store";
 import { createTrip } from "../../api";
 import { useError } from "../../hooks";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { tripFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
 import { DateTime } from "luxon";
+import { Card, CardHeader, FloatingLabel, Form, FormSelect, InputGroup } from "react-bootstrap";
+import { getError } from "../../utils/yup";
 
 export const NewTrip = () => {
   const dispatch = useDispatch();
@@ -42,116 +45,86 @@ export const NewTrip = () => {
     handleError(errors);
   }, [errors]);
 
+  const getErrorByProp = useCallback((propName) => getError(propName, errors), [errors]);
+
   return (
-    <div
-      className="trip"
-      style={{
-        width: "100%",
-      }}
-    >
+    <div className="newTrip">
       <MgContainer style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <section
-          className="trip__card card"
-          style={{
-            width: "600px",
-            backgroundColor: "rgba(255,255,255,0.95)",
-            borderRadius: "30px",
-          }}
-        >
-          <h1 className="trip__title" style={{ textAlign: "center", marginBottom: "50px" }}>
-            Новая поездка
-          </h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="trip__card-body card-body">
+        <Card>
+          <CardHeader className="text-center h4">Новая поездка</CardHeader>
+          <Form onSubmit={handleSubmit(onSubmit)} className="p-4">
             {error && <Error>{error}</Error>}
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="inputGroup-sizing-default">
-                Откуда
-              </span>
-              <select
-                id="from-selector"
-                className="form-select form-control"
-                aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-default"
-                {...register("fromWhere", {
+            <FormSelector
+              className="select-from"
+              options={CITIES}
+              error={getErrorByProp(TRIP_PROPS.FROM)}
+              props={{
+                ...register(TRIP_PROPS.FROM, {
                   onChange: resetError,
-                })}
-              >
-                {CITIES.map((city) => (
-                  <option>{city}</option>
-                ))}
-              </select>
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="inputGroup-sizing-default">
-                Куда
-              </span>
-              <select
-                id="from-selector"
-                className="form-select form-control"
-                aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-default"
-                {...register("toWhere", {
+                }),
+              }}
+            >
+              Откуда
+            </FormSelector>
+            <FormSelector
+              className="select-to"
+              options={CITIES}
+              error={getErrorByProp(TRIP_PROPS.TO)}
+              props={{
+                ...register(TRIP_PROPS.TO, {
                   onChange: resetError,
-                })}
-              >
-                {CITIES.map((i) => (
-                  <option>{i}</option>
-                ))}
-              </select>
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="inputGroup-sizing-default">
-                Когда
-              </span>
-              <input
-                type="datetime-local"
-                class="form-control"
-                aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-default"
-                max={DateTime.now().plus({ years: 1 }).toFormat("yyyy-MM-dd'T'T").toString()}
-                min={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
-                defaultValue={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
-                {...register("datetime", {
-                  onChange: resetError,
-                })}
-              />
-              <span class="input-group-text" id="inputGroup-sizing-default">
-                Стоимость
-              </span>
-              <input
-                type="number"
-                className="form-control"
-                aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-default"
-                defaultValue={0}
-                style={{ maxWidth: "25%" }}
-                {...register("passengerPrice", {
-                  onChange: resetError,
-                })}
-              />
-              <span class="input-group-text" id="basic-addon2">
-                ₽
-              </span>
-            </div>
-            <div class="form-floating mb-3">
-              <input
-                type="number"
-                class="form-control"
-                id="floatingInput"
-                defaultValue={1}
-                {...register("numberPeople", {
-                  onChange: resetError,
-                })}
-              />
-              <label for="floatingInput">Кол-во человек</label>
-            </div>
+                }),
+              }}
+            >
+              Куда
+            </FormSelector>
+            <InputGroup className="mb-3 gap-3">
+              <FloatingLabel label="Когда">
+                <Form.Control
+                  name={TRIP_PROPS.WHEN}
+                  type="datetime-local"
+                  className={`${getErrorByProp(TRIP_PROPS.WHEN) ? "is-invalid" : ""}`}
+                  max={DateTime.now().plus({ years: 1 }).toFormat("yyyy-MM-dd'T'T").toString()}
+                  min={DateTime.now().plus({ hours: 0.5 }).toFormat("yyyy-MM-dd'T'T").toString()}
+                  defaultValue={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
+                  {...register(TRIP_PROPS.WHEN, {
+                    onChange: resetError,
+                  })}
+                />
+              </FloatingLabel>
+              <FloatingLabel label="Стоимость ₽">
+                <Form.Control
+                  name={TRIP_PROPS.PASS_PRICE}
+                  type="number"
+                  className={`${getErrorByProp(TRIP_PROPS.PASS_PRICE) ? "is-invalid" : ""}`}
+                  defaultValue={0}
+                  {...register(TRIP_PROPS.PASS_PRICE, {
+                    onChange: resetError,
+                  })}
+                />
+              </FloatingLabel>
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <FloatingLabel label="Кол-во человек">
+                <Form.Control
+                  name={TRIP_PROPS.PEOPLES}
+                  type="number"
+                  placeholder="name@example.com"
+                  className={`${getErrorByProp(TRIP_PROPS.PEOPLES) ? "is-invalid" : ""}`}
+                  defaultValue={1}
+                  {...register(TRIP_PROPS.PEOPLES, {
+                    onChange: resetError,
+                  })}
+                />
+              </FloatingLabel>
+            </InputGroup>
             <div className="d-flex justify-content-center">
               <button type="submit" class="btn btn-dark">
                 Опубликовать
               </button>
             </div>
-          </form>
-        </section>
+          </Form>
+        </Card>
       </MgContainer>
     </div>
   );

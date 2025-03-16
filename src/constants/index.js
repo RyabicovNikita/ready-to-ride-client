@@ -4,3 +4,4 @@ export * from "./statuses";
 export * from "./formatDates";
 export * from "./selectedValues";
 export * from "./roles";
+export * from "./propNames";

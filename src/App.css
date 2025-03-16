@@ -4,14 +4,6 @@
   flex-direction: column;
 }
 
-.non-border {
-  border-radius: 0;
-}
-
-.non-effects-hover:hover {
-  background-color: inherit;
-}
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);

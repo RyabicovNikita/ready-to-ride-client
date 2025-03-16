@@ -26,8 +26,8 @@ const tripFormSchema = yup.object().shape(shapeTrip);
 
 export const tripFormParams = {
   defaultValues: {
-    fromWhere: "",
-    toWhere: "",
+    fromWhere: CITIES[0],
+    toWhere: CITIES[0],
     passengerPrice: 0,
     createdBy: null,
     status: TRIP_STATUSES.NEW.text,

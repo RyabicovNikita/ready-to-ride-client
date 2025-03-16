@@ -1,8 +1,8 @@
 import { Button, Form } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
-import { useContext, useEffect } from "react";
-import { USER_SESSION_KEY } from "../../constants";
+import { useCallback, useContext, useEffect } from "react";
+import { USER_PROPS, USER_SESSION_KEY } from "../../constants";
 import { setUser } from "../../store/slice";
 import { useDispatch } from "react-redux";
 import { authUser } from "../../api";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router";
 import { Error } from "../Error";
 import { AuthModalContext } from "../../context";
 import { FormCheckbox, FormInput } from "../Form";
-import { INPUT_NAMES } from "./constants";
+import { getError } from "../../utils/yup";
 
 export const AuthModal = ({ show, isRegister }) => {
   const navigate = useNavigate();
@@ -61,8 +61,8 @@ export const AuthModal = ({ show, isRegister }) => {
     }),
   });
 
-  const getError = (propName, errors) => errors?.[propName]?.message;
-  console.log(errors);
+  const getErrorByProp = useCallback((propName) => getError(propName, errors), [errors]);
+
   return (
     <Modal show={show} onHide={authModalHide}>
       <Modal.Header>
@@ -74,37 +74,38 @@ export const AuthModal = ({ show, isRegister }) => {
           {isRegister && (
             <>
               <FormInput
-                key={INPUT_NAMES.NAME}
-                error={getError(INPUT_NAMES.NAME)}
+                key={USER_PROPS.NAME}
+                error={getErrorByProp(USER_PROPS.NAME)}
                 placeholder="Иван"
-                props={getRegProps(INPUT_NAMES.NAME)}
+                props={getRegProps(USER_PROPS.NAME)}
               >
                 Имя
               </FormInput>
               <FormInput
-                key={INPUT_NAMES.SURNAME}
-                error={getError(INPUT_NAMES.SURNAME)}
+                key={USER_PROPS.SURNAME}
+                error={getErrorByProp(USER_PROPS.SURNAME)}
                 placeholder="Иванов"
-                props={getRegProps(INPUT_NAMES.SURNAME)}
+                props={getRegProps(USER_PROPS.SURNAME)}
               >
                 Фамилия
               </FormInput>
             </>
           )}
           <FormInput
-            key={INPUT_NAMES.EMAIL}
-            error={getError(INPUT_NAMES.EMAIL)}
+            key={USER_PROPS.EMAIL}
+            error={getErrorByProp(USER_PROPS.EMAIL)}
             placeholder="myEmail@example.ru"
             type="email"
-            props={getRegProps(INPUT_NAMES.EMAIL)}
+            props={getRegProps(USER_PROPS.EMAIL)}
           >
             Email
           </FormInput>
           <FormInput
-            key={INPUT_NAMES.PASSWORD}
-            error={getError(INPUT_NAMES.PASSWORD)}
+            key={USER_PROPS.PASSWORD}
+            error={getErrorByProp(USER_PROPS.PASSWORD)}
+            type="password"
             placeholder="*******"
-            props={getRegProps(INPUT_NAMES.PASSWORD)}
+            props={getRegProps(USER_PROPS.PASSWORD)}
           >
             Пароль
           </FormInput>
@@ -112,14 +113,15 @@ export const AuthModal = ({ show, isRegister }) => {
           {isRegister && (
             <>
               <FormInput
-                key={INPUT_NAMES.REPEAT_PASSWORD}
-                error={getError(INPUT_NAMES.REPEAT_PASSWORD)}
+                key={USER_PROPS.REPEAT_PASSWORD}
+                error={getErrorByProp(USER_PROPS.REPEAT_PASSWORD)}
                 placeholder="*******"
-                props={getRegProps(INPUT_NAMES.REPEAT_PASSWORD)}
+                type="password"
+                props={getRegProps(USER_PROPS.REPEAT_PASSWORD)}
               >
                 Повторите пароль
               </FormInput>
-              <FormCheckbox key={INPUT_NAMES.IS_DRIVER} props={getRegProps(INPUT_NAMES.IS_DRIVER)}>
+              <FormCheckbox key={USER_PROPS.IS_DRIVER} props={getRegProps(USER_PROPS.IS_DRIVER)}>
                 Я водитель
               </FormCheckbox>
             </>

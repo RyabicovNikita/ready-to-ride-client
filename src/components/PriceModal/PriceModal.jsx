@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Button, Modal } from "react-bootstrap";
 
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import { Error } from "../Error";
 import { LOCAL_TRIPS } from "../../constants";
 import { usePriceModalContext } from "../../hooks";
 import { FormInput } from "../Form";
+import { getError } from "../../utils/yup";
 
 export const PriceModal = () => {
   const { setUnconfirmedTrips } = useContext(UnconfirmedContext);
@@ -72,9 +73,7 @@ export const PriceModal = () => {
     }),
   });
 
-  const getError = (propName) => errors?.[propName]?.message;
-
-  const priceError = getError("driverPrice");
+  const priceError = useMemo(() => getError("driverPrice", errors), [errors]);
 
   return (
     <div className="d-flex justify-content-center w-100">
