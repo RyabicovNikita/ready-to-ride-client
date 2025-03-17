@@ -9,10 +9,10 @@ import { authUser } from "../../api";
 import { useError } from "../../hooks";
 import { getFormParams } from "../../utils/yup/formParams";
 import { useNavigate } from "react-router";
-import { Error } from "../Error";
 import { AuthModalContext } from "../../context";
 import { FormCheckbox, FormInput } from "../Form";
 import { getError } from "../../utils/yup";
+import { renderError } from "../../utils";
 
 export const AuthModal = ({ show, isRegister }) => {
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ export const AuthModal = ({ show, isRegister }) => {
         <Modal.Title>{isRegister ? "Регистрация" : "Авторизация"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {error && <Error>{error}</Error>}
+        {renderError(error)}
         <Form className="needs-validation" onSubmit={handleSubmit(onSubmit)} novalidate>
           {isRegister && (
             <>

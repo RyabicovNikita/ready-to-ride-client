@@ -1,16 +1,16 @@
 import "./Trip.scss";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Button, Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../../../api";
 import { useError, useLoader, usePriceModalContext } from "../../../../hooks";
-import { ConfirmModal, Error, Loader, MgContainer, PriceModal } from "../../../../components";
+import { ConfirmModal, Loader, MgContainer, PriceModal } from "../../../../components";
 import { UserInfoCard } from "../UserInfoCard";
-import { logoutUserFromStore, selectUser } from "../../../../store";
-import { addUnconfirmedTrip } from "../../../../utils";
+import { selectUser } from "../../../../store";
+import { addUnconfirmedTrip, logoutUserIfTokenExpired, renderError } from "../../../../utils";
 import { UnconfirmedContext } from "../../../../context";
-import { ROLES, TRIP_STATUSES, USER_SESSION_KEY } from "../../../../constants";
+import { ROLES, TRIP_STATUSES } from "../../../../constants";
 
 export const Trip = ({
   setTripEdit,
@@ -26,6 +26,11 @@ export const Trip = ({
 }) => {
   const [confirmModalState, setConfirmModalState] = useState("");
   const [confirmModalShow, setConfirmModalShow] = useState(false);
+
+  const checkTokenExpired = useCallback(
+    (error) => logoutUserIfTokenExpired({ error, handleError, dispatch, navigate, authModalView, resetError }),
+    []
+  );
 
   const modalShow = () => setConfirmModalShow(true);
   const modalHide = () => setConfirmModalShow(false);
@@ -44,18 +49,7 @@ export const Trip = ({
     getTripByID(id).then((res) => {
       hideLoader();
       if (res.error) {
-        let timeOutID;
-        handleError(res.error);
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem(USER_SESSION_KEY);
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            authModalView();
-            resetError();
-          }, 3000);
-        }
+        checkTokenExpired(res.error);
         return;
       }
       setTrip(res.body);
@@ -69,18 +63,7 @@ export const Trip = ({
   const onConfirmDriver = () => {
     confirmDriver(id, prePrice).then((res) => {
       if (res.error) {
-        let timeOutID;
-        handleError(res.error);
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem(USER_SESSION_KEY);
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            authModalView();
-            resetError();
-          }, 3000);
-        }
+        checkTokenExpired(res.error);
         return;
       }
       setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.READY.text, totalPrice: prePrice }));
@@ -89,18 +72,7 @@ export const Trip = ({
   const onLooseDriver = () => {
     looseDriver(id).then((res) => {
       if (res.error) {
-        let timeOutID;
-        handleError(res.error);
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem(USER_SESSION_KEY);
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            authModalView();
-            resetError();
-          }, 3000);
-        }
+        checkTokenExpired(res.error);
         return;
       }
       setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.NEW.text, totalPrice: 0, driver: null }));
@@ -110,19 +82,7 @@ export const Trip = ({
   const onCancelTrip = () => {
     cancelTrip(id).then((res) => {
       if (res.error) {
-        let timeOutID;
-        handleError(res.error);
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem(USER_SESSION_KEY);
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            authModalView();
-            resetError();
-          }, 3000);
-        }
-        handleError(res.error);
+        checkTokenExpired(res.error);
         return;
       }
       setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.CANCEL.text }));
@@ -132,18 +92,7 @@ export const Trip = ({
   const onDeleteTrip = () => {
     deleteTrip(id).then((res) => {
       if (res.error) {
-        let timeOutID;
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem(USER_SESSION_KEY);
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            authModalView();
-            resetError();
-          }, 3000);
-        }
-        handleError(res.error);
+        checkTokenExpired(res.error);
         return;
       }
       navigate("/trips");
@@ -163,13 +112,7 @@ export const Trip = ({
         <Container className="trip" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
           <PriceModal />
           <ConfirmModal show={confirmModalShow} modalHide={modalHide} data={confirmModalState} />
-          {error && (
-            <Error>
-              {error === "jwt expired"
-                ? "Ваш сеанс устарел, перенаправление на страницу авторизации..."
-                : error?.message ?? error?.error ?? error}
-            </Error>
-          )}
+          {renderError(error)}
           {!error && (
             <>
               <div className="trip__header" style={{ backgroundColor: headerColor }}>

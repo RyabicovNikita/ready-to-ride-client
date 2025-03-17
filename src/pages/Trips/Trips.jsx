@@ -1,16 +1,17 @@
 import "./Trips.scss";
-import { useContext, useEffect, useState } from "react";
-import { Error, Loader, PriceModal, TripCard } from "../../components";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { Loader, PriceModal, TripCard } from "../../components";
 import { getTrips } from "../../api";
 import { useError, useLoader } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { addTripsInStore, logoutUserFromStore, selectTrips, selectUser } from "../../store";
+import { addTripsInStore, selectTrips, selectUser } from "../../store";
 import { useNavigate } from "react-router";
-import { CITIES, SELECTED_VALUES, USER_SESSION_KEY } from "../../constants";
+import { CITIES, SELECTED_VALUES } from "../../constants";
 import { useForm } from "react-hook-form";
 import { filteredTripFormParams } from "../../utils/yup/formParams";
 import { Card } from "react-bootstrap";
 import { AuthModalContext } from "../../context";
+import { logoutUserIfTokenExpired, renderError } from "../../utils";
 
 export const Trips = ({ onlyUserTrips }) => {
   const [isFilter, setIsFilter] = useState(false);
@@ -26,24 +27,18 @@ export const Trips = ({ onlyUserTrips }) => {
   const { error, handleError, resetError } = useError();
   const { id: userID, isDriver } = useSelector(selectUser);
 
+  const checkTokenExpired = useCallback(
+    (error) => logoutUserIfTokenExpired({ error, handleError, dispatch, navigate, authModalView, resetError }),
+    []
+  );
+
   useEffect(() => {
     showLoader();
     let timeOutID;
     getTrips(onlyUserTrips, filter).then((res) => {
       hideLoader();
-      if (res?.error) {
-        handleError(res.error);
-
-        if (res.error === "jwt expired") {
-          sessionStorage.removeItem(USER_SESSION_KEY);
-          dispatch(logoutUserFromStore());
-          if (timeOutID) clearTimeout(timeOutID);
-          timeOutID = setTimeout(() => {
-            navigate("/login");
-            authModalView();
-            resetError();
-          }, 3000);
-        }
+      if (res.error) {
+        checkTokenExpired(res.error);
         return;
       }
       dispatch(addTripsInStore(res.body));
@@ -235,13 +230,8 @@ export const Trips = ({ onlyUserTrips }) => {
             </form>
           </div>
           <h1>Поездки</h1>
-          {error ? (
-            <Error>
-              {error === "jwt expired"
-                ? "Ваш сеанс устарел, перенаправление на страницу авторизации..."
-                : error?.message ?? error?.error ?? error}
-            </Error>
-          ) : (
+          {renderError(error)}
+          {!error &&
             trips.map((trip, index) => (
               <TripCard
                 id={trip.id}
@@ -257,8 +247,7 @@ export const Trips = ({ onlyUserTrips }) => {
                 passengersNumber={trip.passengersNumber}
                 status={trip.status}
               />
-            ))
-          )}
+            ))}
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import "./NewTrip.scss";
 import { useForm } from "react-hook-form";
-import { Error, FormSelector, MgContainer } from "../../components";
+import { FormSelector, MgContainer } from "../../components";
 import { CITIES, TRIP_PROPS } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addTripInStore, selectUser } from "../../store";
@@ -12,6 +12,7 @@ import { useNavigate } from "react-router";
 import { DateTime } from "luxon";
 import { Card, CardHeader, FloatingLabel, Form, InputGroup } from "react-bootstrap";
 import { getError } from "../../utils/yup";
+import { renderError } from "../../utils";
 
 export const NewTrip = () => {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ export const NewTrip = () => {
         <Card>
           <CardHeader className="text-center h4">Новая поездка</CardHeader>
           <Form onSubmit={handleSubmit(onSubmit)} className="p-4">
-            {error && <Error>{error}</Error>}
+            {renderError(error)}
             <FormSelector
               className="select-from"
               options={CITIES}

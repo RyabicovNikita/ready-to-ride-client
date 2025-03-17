@@ -1,16 +1,14 @@
 import * as yup from "yup";
 import { useContext, useMemo } from "react";
 import { Button, Modal } from "react-bootstrap";
-
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import { UnconfirmedContext } from "../../context";
-import { Error } from "../Error";
 import { LOCAL_TRIPS } from "../../constants";
 import { usePriceModalContext } from "../../hooks";
 import { FormInput } from "../Form";
 import { getError } from "../../utils/yup";
+import { renderError } from "../../utils";
 
 export const PriceModal = () => {
   const { setUnconfirmedTrips } = useContext(UnconfirmedContext);
@@ -83,7 +81,7 @@ export const PriceModal = () => {
         </Modal.Header>
         <Modal.Body>
           <form id="driverPriceForm" onSubmit={handleSubmit(handleAccept)}>
-            {priceError && <Error> {priceError}</Error>}
+            {renderError(priceError)}
             <FormInput
               key={"driverPrice"}
               placeholder={0}

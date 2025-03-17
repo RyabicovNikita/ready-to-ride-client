@@ -3,11 +3,18 @@ import "./EditTrip.scss";
 import { Button, Container } from "react-bootstrap";
 import { updateTrip } from "../../../../api";
 import { useError, useLoader } from "../../../../hooks";
-import { Error, FormInput, FormSelector, Loader, MgContainer } from "../../../../components";
+import { FormInput, FormSelector, Loader, MgContainer } from "../../../../components";
 import { UserInfoCard } from "../UserInfoCard";
-import { CITIES, TRIP_PROPS, USER_SESSION_KEY } from "../../../../constants";
+import { CITIES, TRIP_PROPS } from "../../../../constants";
 import { PassIcon } from "../Icons";
-import { logoutUserFromStore } from "../../../../store";
+import { logoutUserIfTokenExpired, renderError } from "../../../../utils";
+import { useCallback } from "react";
+
+const fieldsIsCorrected = (trip) => {
+  if (!trip.fromWhere || trip.fromWhere === CITIES[0]) return "Выберите откуда планируете выезжать";
+  if (!trip.toWhere || trip.toWhere === CITIES[0]) return "Выберите пункт назначения";
+  if (trip.fromWhere === trip.toWhere) return "Выберите разные пункты";
+};
 
 export const EditTrip = ({
   setTripEdit,
@@ -22,12 +29,10 @@ export const EditTrip = ({
 }) => {
   const { error, resetError, handleError } = useError();
   const { loading } = useLoader();
-
-  const fieldsIsCorrected = (trip) => {
-    if (!trip.fromWhere || trip.fromWhere === CITIES[0]) return "Выберите откуда планируете выезжать";
-    if (!trip.toWhere || trip.toWhere === CITIES[0]) return "Выберите пункт назначения";
-    if (trip.fromWhere === trip.toWhere) return "Выберите разные пункты";
-  };
+  const checkTokenExpired = useCallback(
+    (error) => logoutUserIfTokenExpired({ error, handleError, dispatch, navigate, authModalView, resetError }),
+    []
+  );
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -46,18 +51,7 @@ export const EditTrip = ({
     });
 
     if (res.error) {
-      if (res.error === "jwt expired") {
-        let timeOutID;
-        handleError(res.error);
-        sessionStorage.removeItem(USER_SESSION_KEY);
-        dispatch(logoutUserFromStore());
-        if (timeOutID) clearTimeout(timeOutID);
-        timeOutID = setTimeout(() => {
-          navigate("/login");
-          authModalView();
-          resetError();
-        }, 3000);
-      }
+      checkTokenExpired(res.error);
       return;
     }
     setTripEdit(false);
@@ -140,13 +134,7 @@ export const EditTrip = ({
                 </div>
               </div>
             </div>
-            {error && (
-              <Error>
-                {error === "jwt expired"
-                  ? "Ваш сеанс устарел, перенаправление на страницу авторизации..."
-                  : error?.message ?? error?.error ?? error}
-              </Error>
-            )}
+            {renderError(error)}}
             <div className="trip__footer">
               <div className="trip__footer-count">
                 <div className="trip__footer-pass-count">
