@@ -12,8 +12,8 @@ export const renderError = (error) =>
   );
 
 export const logoutUserIfTokenExpired = ({ error, handleError, dispatch, navigate, authModalView, resetError }) => {
-  if (error !== "jwt expired") return false;
   handleError(error);
+  if (error !== "jwt expired") return false;
   let timeOutID;
   sessionStorage.removeItem(USER_SESSION_KEY);
   dispatch(logoutUserFromStore());
