@@ -1,19 +1,6 @@
 .editTrip {
   width: 100%;
   height: 100%;
-  .trip__content {
-    height: inherit;
-  }
-  .trip__userCard-price {
-    display: flex;
-    white-space: nowrap;
-    gap: 10px;
-    align-items: center;
-  }
-  .trip__header {
-    height: 80px;
-    z-index: 1;
-  }
   .bi-arrow-right {
     margin-top: 20px;
   }
@@ -21,13 +8,30 @@
     display: flex;
     justify-content: center;
   }
-  .trip__userCard-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .trip__footer-pass-count {
-    align-items: center;
+  .trip {
+    &__userCard {
+      &-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      &-price {
+        display: flex;
+        white-space: nowrap;
+        gap: 10px;
+        align-items: center;
+      }
+    }
+    &__header {
+      height: 80px;
+      z-index: 1;
+    }
+    &__footer-pass-count {
+      align-items: center;
+    }
+    &__content {
+      height: inherit;
+    }
   }
   .form-control {
     width: fit-content;

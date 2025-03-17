@@ -1,7 +1,6 @@
 import "./Trip.scss";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Link } from "react-router";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../../../api";
 import { useError, useLoader, usePriceModalContext } from "../../../../hooks";
@@ -10,7 +9,11 @@ import { UserInfoCard } from "../UserInfoCard";
 import { selectUser } from "../../../../store";
 import { addUnconfirmedTrip, logoutUserIfTokenExpired, renderError } from "../../../../utils";
 import { UnconfirmedContext } from "../../../../context";
-import { ROLES, TRIP_STATUSES } from "../../../../constants";
+import { TRIP_STATUSES } from "../../../../constants";
+import { CardHeader } from "../CardHeader";
+import { RightArrow } from "../../../../icons/RightArrow";
+import { TripPeoples } from "../TripPeoples";
+import { ActionButtons } from "./components";
 
 export const Trip = ({
   setTripEdit,
@@ -24,6 +27,7 @@ export const Trip = ({
   navigate,
   dispatch,
 }) => {
+  const confirmQuestion = "Данное действие нельзя отменить, вы уверены?";
   const [confirmModalState, setConfirmModalState] = useState("");
   const [confirmModalShow, setConfirmModalShow] = useState(false);
 
@@ -60,7 +64,7 @@ export const Trip = ({
     updateHeaderColor();
   }, [trip.status]);
 
-  const onConfirmDriver = () => {
+  const handleConfirmDriver = () => {
     confirmDriver(id, prePrice).then((res) => {
       if (res.error) {
         checkTokenExpired(res.error);
@@ -69,7 +73,7 @@ export const Trip = ({
       setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.READY.text, totalPrice: prePrice }));
     });
   };
-  const onLooseDriver = () => {
+  const handleLooseDriver = () => {
     looseDriver(id).then((res) => {
       if (res.error) {
         checkTokenExpired(res.error);
@@ -79,7 +83,7 @@ export const Trip = ({
     });
   };
 
-  const onCancelTrip = () => {
+  const handleCancelTrip = () => {
     cancelTrip(id).then((res) => {
       if (res.error) {
         checkTokenExpired(res.error);
@@ -89,7 +93,7 @@ export const Trip = ({
     });
   };
 
-  const onDeleteTrip = () => {
+  const onDeleteTripClick = () => {
     deleteTrip(id).then((res) => {
       if (res.error) {
         checkTokenExpired(res.error);
@@ -97,6 +101,52 @@ export const Trip = ({
       }
       navigate("/trips");
     });
+  };
+
+  const onApproveDriverClick = () => {
+    setConfirmModalState({
+      title: "Утверждение водителя",
+      message: "После утверждения водителя цена станет фиксированной, вы уверены?",
+      onAccept: handleConfirmDriver,
+    });
+    modalShow();
+  };
+
+  const onUntieDriverClick = () => {
+    setConfirmModalState({
+      title: "Отвязать водителя",
+      message: confirmQuestion,
+      onAccept: handleLooseDriver,
+    });
+    modalShow();
+  };
+
+  const onCancelTripClick = () => {
+    setConfirmModalState({
+      title: "Отмена поездки",
+      message: confirmQuestion,
+      onAccept: handleCancelTrip,
+    });
+    modalShow();
+  };
+
+  const onUncofirmedTripsClick = () =>
+    addUnconfirmedTrip({
+      curTripID: id,
+      passenger: trip.creator,
+      priceModalView: priceModalView,
+      setUnconfirmedTrips,
+      unconfirmedTrips,
+    });
+
+  const onEditTripClick = () => setTripEdit(true);
+
+  const clickActions = {
+    onApproveDriverClick,
+    onUntieDriverClick,
+    onCancelTripClick,
+    onEditTripClick,
+    onDeleteTripClick,
   };
 
   return (
@@ -115,16 +165,11 @@ export const Trip = ({
           {renderError(error)}
           {!error && (
             <>
-              <div className="trip__header" style={{ backgroundColor: headerColor }}>
-                <span>{trip.status}</span>
-                <div className="trip__container">
-                  <div className="trip__cities">
-                    <span>{trip.fromWhere}</span>
-                    <i class="bi bi-arrow-right"></i>
-                    <span>{trip.toWhere}</span>
-                  </div>
-                </div>
-              </div>
+              <CardHeader headerColor={headerColor} trip={trip}>
+                <span>{trip.fromWhere}</span>
+                <RightArrow />
+                <span>{trip.toWhere}</span>
+              </CardHeader>
 
               <div className="trip__content">
                 <UserInfoCard
@@ -140,73 +185,10 @@ export const Trip = ({
                 />
               </div>
               <div className="trip__footer">
-                <div className="trip__footer-count">
-                  <div className="trip__footer-pass-count">
-                    <span>{trip.passengersNumber}</span>
-                    <i class="bi bi-people-fill"></i>
-                  </div>
-                </div>
-
-                <div className="d-flex gap-5">
-                  {!isDriver && trip?.status === TRIP_STATUSES.CORRECTED_PRICE.text && trip?.creator?.id === userID && (
-                    <>
-                      <Button
-                        onClick={() => {
-                          setConfirmModalState({
-                            title: "Утверждение водителя",
-                            message: "После утверждения водителя цена станет фиксированной, вы уверены?",
-                            onAccept: onConfirmDriver,
-                          });
-                          modalShow();
-                        }}
-                        className="btn-success"
-                      >
-                        Утвердить водителя
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setConfirmModalState({
-                            title: "Отвязать водителя",
-                            message: "Данное действие нельзя отменить, вы уверены?",
-                            onAccept: onLooseDriver,
-                          });
-                          modalShow();
-                        }}
-                        className="btn-warning"
-                      >
-                        Отвязать водителя
-                      </Button>
-                    </>
-                  )}
-                  {trip?.creator?.id === userID &&
-                    trip?.status !== TRIP_STATUSES.CANCEL.text &&
-                    trip?.status !== TRIP_STATUSES.SUCCESSFUL.text && (
-                      <Button
-                        onClick={() => {
-                          setConfirmModalState({
-                            title: "Отмена поездки",
-                            message: "Данное действие нельзя отменить, вы уверены?",
-                            onAccept: onCancelTrip,
-                          });
-                          modalShow();
-                        }}
-                        className="btn-danger"
-                      >
-                        Отменить поездку
-                      </Button>
-                    )}
-                  {trip?.creator?.id === userID && trip?.status === TRIP_STATUSES.NEW.text && (
-                    <Link className="btn bg-dark text-light border-dark p-3" onClick={() => setTripEdit(true)}>
-                      Редактировать поездку
-                    </Link>
-                  )}
-                  {role === ROLES.ADMIN && trip?.id && (
-                    <button className="btn bg-dark text-light border-dark p-3" onClick={onDeleteTrip}>
-                      Удалить поездку
-                    </button>
-                  )}
-                </div>
-
+                <TripPeoples>
+                  <span>{trip.passengersNumber}</span>
+                </TripPeoples>
+                <ActionButtons isDriver={isDriver} role={role} trip={trip} userID={userID} actions={clickActions} />
                 <div className="trip__footer-totalPrice">
                   <div className="trip__footer-totalPrice-container">
                     {trip.totalPrice > 0 ? (
@@ -221,15 +203,7 @@ export const Trip = ({
                   {isDriver && !trip?.driver?.userName && (
                     <button
                       className={`btn ${isUnconfirmedTrips ? "btn-danger" : "btn-dark"}`}
-                      onClick={() =>
-                        addUnconfirmedTrip({
-                          curTripID: id,
-                          passenger: trip.creator,
-                          priceModalView: priceModalView,
-                          setUnconfirmedTrips,
-                          unconfirmedTrips,
-                        })
-                      }
+                      onClick={onUncofirmedTripsClick}
                     >
                       {isUnconfirmedTrips ? "Не едем" : "Едем"}
                     </button>

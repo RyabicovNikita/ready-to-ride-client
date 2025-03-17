@@ -1,6 +1,6 @@
 import "../MainTrip/Trip.scss";
 import "./EditTrip.scss";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { updateTrip } from "../../../../api";
 import { useError, useLoader } from "../../../../hooks";
 import { FormInput, FormSelector, Loader, MgContainer } from "../../../../components";
@@ -9,6 +9,10 @@ import { CITIES, TRIP_PROPS } from "../../../../constants";
 import { PassIcon } from "../Icons";
 import { logoutUserIfTokenExpired, renderError } from "../../../../utils";
 import { useCallback } from "react";
+import { CardHeader } from "../CardHeader";
+import { RightArrow } from "./../../../../icons/RightArrow";
+import { TripPeoples } from "../TripPeoples";
+import { ActionButtons } from "./components";
 
 const fieldsIsCorrected = (trip) => {
   if (!trip.fromWhere || trip.fromWhere === CITIES[0]) return "Выберите откуда планируете выезжать";
@@ -74,33 +78,28 @@ export const EditTrip = ({
       >
         <Container className="trip" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
           <>
-            <div className="trip__header " style={{ backgroundColor: headerColor }}>
-              <div className="d-flex h-100 align-items-center">{trip.status}</div>
-              <div className="trip__container">
-                <div className="trip__cities">
-                  <FormSelector
-                    key={TRIP_PROPS.FROM}
-                    error={error}
-                    options={CITIES}
-                    props={{
-                      value: trip?.fromWhere,
-                      onChange: ({ target }) => onInputChange("fromWhere", target.value),
-                    }}
-                  >
-                    Откуда
-                  </FormSelector>
-                  <i class="bi bi-arrow-right"></i>
-                  <FormSelector
-                    key={TRIP_PROPS.TO}
-                    error={error}
-                    options={CITIES}
-                    props={{ value: trip?.toWhere, onChange: ({ target }) => onInputChange("toWhere", target.value) }}
-                  >
-                    Куда
-                  </FormSelector>
-                </div>
-              </div>
-            </div>
+            <CardHeader headerColor={headerColor} trip={trip}>
+              <FormSelector
+                key={TRIP_PROPS.FROM}
+                error={error}
+                options={CITIES}
+                props={{
+                  value: trip?.fromWhere,
+                  onChange: ({ target }) => onInputChange("fromWhere", target.value),
+                }}
+              >
+                Откуда
+              </FormSelector>
+              <RightArrow />
+              <FormSelector
+                key={TRIP_PROPS.TO}
+                error={error}
+                options={CITIES}
+                props={{ value: trip?.toWhere, onChange: ({ target }) => onInputChange("toWhere", target.value) }}
+              >
+                Куда
+              </FormSelector>
+            </CardHeader>
             <div className="trip__content">
               <UserInfoCard
                 userName={trip?.driver?.userName ?? "Пока не найден"}
@@ -134,35 +133,21 @@ export const EditTrip = ({
                 </div>
               </div>
             </div>
-            {renderError(error)}}
+            {renderError(error)}
             <div className="trip__footer">
-              <div className="trip__footer-count">
-                <div className="trip__footer-pass-count">
-                  <FormInput
-                    key={TRIP_PROPS.PEOPLES}
-                    type="number"
-                    props={{
-                      min: 1,
-                      max: 20,
-                      defaultValue: trip?.passengersNumber,
-                      onChange: ({ target }) => onInputChange("passengersNumber", Number(target.value)),
-                    }}
-                  />
-
-                  <i class="bi bi-people-fill"></i>
-                </div>
-              </div>
-              <Button
-                className="btn-danger"
-                onClick={() => {
-                  setTripEdit(false);
-                }}
-              >
-                Отменить
-              </Button>
-              <Button className="btn-success" type="submit">
-                Сохранить
-              </Button>
+              <TripPeoples>
+                <FormInput
+                  key={TRIP_PROPS.PEOPLES}
+                  type="number"
+                  props={{
+                    min: 1,
+                    max: 20,
+                    defaultValue: trip?.passengersNumber,
+                    onChange: ({ target }) => onInputChange("passengersNumber", Number(target.value)),
+                  }}
+                />
+              </TripPeoples>
+              <ActionButtons setTripEdit={setTripEdit} />
               <div className="trip__footer-totalPrice">
                 <div className="trip__footer-totalPrice-container">
                   <div className="d-flex flex-column align-items-end">
