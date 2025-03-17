@@ -79,7 +79,7 @@ export const NewTrip = () => {
             >
               Куда
             </FormSelector>
-            <InputGroup className="mb-3 gap-3">
+            <InputGroup className="newTrip__inputGroup mb-3 gap-3">
               <FloatingLabel label="Когда">
                 <Form.Control
                   name={TRIP_PROPS.WHEN}
@@ -106,8 +106,6 @@ export const NewTrip = () => {
                   })}
                 />
               </FloatingLabel>
-            </InputGroup>
-            <InputGroup className="mb-3">
               <FloatingLabel label="Кол-во человек">
                 <Form.Control
                   name={TRIP_PROPS.PEOPLES}

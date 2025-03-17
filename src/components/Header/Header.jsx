@@ -47,7 +47,7 @@ export const Header = ({ setIsRegister }) => {
   return (
     <header className="header">
       <Navbar expand="lg" className="bg-body-tertiary">
-        <MgContainer style={{ display: "flex" }}>
+        <MgContainer style={{ display: "flex", gap: "20px" }}>
           <Navbar.Brand href="/">
             <img alt="" src={logo} width="60" height="auto" className="header__logo d-inline-block align-top" />
           </Navbar.Brand>

@@ -1,10 +1,11 @@
+import "./DropDownMenu.css";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import ghostImg from "../../../../images/ghost.png";
 
 export const DropDownMenu = ({ user, onRegisterClick, onLoginClick, onLogoutClick }) => (
   <Navbar.Collapse id="basic-navbar-nav pr-2">
     <Nav className="align-items-center">
-      <div className="d-flex align-items-center m-3">
+      <div className="d-flex align-items-center m-3 gap-1 dropdown-container">
         <img
           src={ghostImg}
           alt="Иконка пользоватея"

@@ -1,0 +1,10 @@
+.dropdown-container {
+  .dropdown-menu {
+    position: absolute;
+  }
+}
+
+.show {
+  display: flex;
+  flex-wrap: wrap;
+}

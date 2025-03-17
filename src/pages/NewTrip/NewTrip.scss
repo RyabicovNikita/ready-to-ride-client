@@ -1,8 +1,12 @@
 .newTrip {
+  width: 100%;
   .select-from,
   .select-to {
     .form-floating {
       width: 100%;
     }
+  }
+  .form-floating {
+    min-width: 180px;
   }
 }
