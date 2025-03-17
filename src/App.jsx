@@ -1,6 +1,5 @@
 import "./App.css";
 import { Header } from "./components/Header";
-
 import { AuthModal, Footer } from "./components";
 import { useLayoutEffect, useState } from "react";
 import { USER_SESSION_KEY } from "./constants";
