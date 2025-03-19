@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
 import { Main, UnconfirmedTrips, NewTrip, Trips, AboutUs, TripPage } from "../pages";
 import { FullScreenContainer } from "../core/UI";
+import { Comments } from "../components/Comments/Comments";
 
 export const RoutesContainer = () => (
   <Routes>
@@ -38,5 +39,6 @@ export const RoutesContainer = () => (
       }
     />
     <Route path="/aboutUs" element={<AboutUs />} />
+    <Route path="/test" element={<Comments/>}/>
   </Routes>
 );
