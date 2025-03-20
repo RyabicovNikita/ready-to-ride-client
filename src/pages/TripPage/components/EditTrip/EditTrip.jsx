@@ -8,11 +8,12 @@ import { UserInfoCard } from "../UserInfoCard";
 import { CITIES, TRIP_PROPS } from "../../../../constants";
 import { PassIcon } from "../Icons";
 import { logoutUserIfTokenExpired, renderError } from "../../../../utils";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { CardHeader } from "../CardHeader";
 import { RightArrow } from "./../../../../icons/RightArrow";
 import { TripPeoples } from "../TripPeoples";
 import { ActionButtons } from "./components";
+import { redGetTrip } from "../../../../store";
 
 const fieldsIsCorrected = (trip) => {
   if (!trip.fromWhere || trip.fromWhere === CITIES[0]) return "Выберите откуда планируете выезжать";
@@ -20,17 +21,8 @@ const fieldsIsCorrected = (trip) => {
   if (trip.fromWhere === trip.toWhere) return "Выберите разные пункты";
 };
 
-export const EditTrip = ({
-  setTripEdit,
-  trip,
-  setTrip,
-  headerColor,
-  id,
-  authModalView,
-  prePrice,
-  navigate,
-  dispatch,
-}) => {
+export const EditTrip = ({ setTripEdit, trip, headerColor, id, authModalView, prePrice, navigate, dispatch }) => {
+  const [editData, setEditData] = useState(trip);
   const { error, resetError, handleError } = useError();
   const { loading } = useLoader();
   const checkTokenExpired = useCallback(
@@ -47,10 +39,10 @@ export const EditTrip = ({
     }
 
     const res = await updateTrip({
-      fromWhere: trip.fromWhere,
-      toWhere: trip.toWhere,
-      numberPeople: trip.passengersNumber,
-      passengerPrice: trip.creator.price,
+      fromWhere: editData.fromWhere,
+      toWhere: editData.toWhere,
+      numberPeople: editData.passengersNumber,
+      passengerPrice: editData.creator.price,
       tripID: id,
     });
 
@@ -58,13 +50,14 @@ export const EditTrip = ({
       checkTokenExpired(res.error);
       return;
     }
+    dispatch(redGetTrip(res.body));
     setTripEdit(false);
   };
 
   const onInputChange = (propName, newValue) => {
     resetError();
 
-    setTrip((prevState) => ({ ...prevState, [propName]: newValue }));
+    setEditData((prevState) => ({ ...prevState, [propName]: newValue }));
   };
   return (
     <form onSubmit={onSubmit} className="editTrip">
@@ -123,7 +116,7 @@ export const EditTrip = ({
                       defaultValue: trip?.creator?.price,
                       onChange: ({ target }) => {
                         resetError();
-                        setTrip((prevState) => ({
+                        setEditData((prevState) => ({
                           ...prevState,
                           creator: { ...prevState.creator, price: Number(target.value) },
                         }));

@@ -8,3 +8,4 @@ export * from "./Button/Button";
 export * from "./Error/Error";
 export * from "./PriceModal/index";
 export * from "./Form/index";
+export * from "./Comments/index";

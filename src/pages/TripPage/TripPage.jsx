@@ -3,12 +3,13 @@ import { EditTrip, Trip } from "./components";
 import { useNavigate, useParams } from "react-router";
 import { AuthModalContext } from "../../context";
 import { getTripPrePrice } from "../../utils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TRIP_STATUSES } from "../../constants";
+import { selectTrip } from "../../store";
 
 export const TripPage = () => {
   const [tripEdit, setTripEdit] = useState(false);
-  const [trip, setTrip] = useState({});
+  const trip = useSelector(selectTrip);
   const [headerColor, setHeaderColor] = useState("white");
   const { authModalView } = useContext(AuthModalContext);
   const prePrice = useMemo(() => getTripPrePrice(trip), [trip]);
@@ -28,7 +29,6 @@ export const TripPage = () => {
       headerColor={headerColor}
       setTripEdit={setTripEdit}
       trip={trip}
-      setTrip={setTrip}
       id={id}
       authModalView={authModalView}
       prePrice={prePrice}
@@ -41,7 +41,6 @@ export const TripPage = () => {
       updateHeaderColor={updateHeaderColor}
       setTripEdit={setTripEdit}
       trip={trip}
-      setTrip={setTrip}
       id={id}
       authModalView={authModalView}
       prePrice={prePrice}

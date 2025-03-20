@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FormSelector, MgContainer } from "../../components";
 import { CITIES, TRIP_PROPS } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addTripInStore, selectUser } from "../../store";
+import { redGetTrip, selectUser } from "../../store";
 import { createTrip } from "../../api";
 import { useError } from "../../hooks";
 import { useCallback, useEffect } from "react";
@@ -39,7 +39,7 @@ export const NewTrip = () => {
       return;
     }
     navigate(`/trips`);
-    dispatch(addTripInStore(newTrip));
+    dispatch(redGetTrip(newTrip));
   };
 
   useEffect(() => {

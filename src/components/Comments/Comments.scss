@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap");
 
 .comments {
+  &__send {
+    all: unset;
+    height: fit-content;
+  }
   .card {
     position: relative;
     display: flex;
@@ -18,7 +22,7 @@
   }
   .newComment {
     border-radius: 11px;
-    * {
+    .form-control {
       min-height: 63px;
       max-height: 155px;
     }
@@ -33,5 +37,11 @@
   }
   .bi-send {
     cursor: pointer;
+  }
+  &__content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 25vh;
+    width: 100%;
   }
 }

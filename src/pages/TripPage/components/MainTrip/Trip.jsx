@@ -2,23 +2,22 @@ import "./Trip.scss";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { cancelTrip, confirmDriver, deleteTrip, getTripByID, looseDriver } from "../../../../api";
+import { getTripByID } from "../../../../api";
 import { useError, useLoader, usePriceModalContext } from "../../../../hooks";
-import { ConfirmModal, Loader, MgContainer, PriceModal } from "../../../../components";
+import { Comments, ConfirmModal, Loader, MgContainer, PriceModal } from "../../../../components";
 import { UserInfoCard } from "../UserInfoCard";
-import { selectUser } from "../../../../store";
+import { redGetTrip, selectUser } from "../../../../store";
 import { addUnconfirmedTrip, logoutUserIfTokenExpired, renderError } from "../../../../utils";
 import { UnconfirmedContext } from "../../../../context";
-import { TRIP_STATUSES } from "../../../../constants";
 import { CardHeader } from "../CardHeader";
 import { RightArrow } from "../../../../icons/RightArrow";
 import { TripPeoples } from "../TripPeoples";
 import { ActionButtons } from "./components";
+import { getOnClickActions } from "./utils";
 
 export const Trip = ({
   setTripEdit,
   trip,
-  setTrip,
   headerColor,
   updateHeaderColor,
   id,
@@ -27,7 +26,6 @@ export const Trip = ({
   navigate,
   dispatch,
 }) => {
-  const confirmQuestion = "Данное действие нельзя отменить, вы уверены?";
   const [confirmModalState, setConfirmModalState] = useState("");
   const [confirmModalShow, setConfirmModalShow] = useState(false);
 
@@ -56,79 +54,13 @@ export const Trip = ({
         checkTokenExpired(res.error);
         return;
       }
-      setTrip(res.body);
+      dispatch(redGetTrip(res.body));
     });
   }, []);
 
   useEffect(() => {
     updateHeaderColor();
-  }, [trip.status]);
-
-  const handleConfirmDriver = () => {
-    confirmDriver(id, prePrice).then((res) => {
-      if (res.error) {
-        checkTokenExpired(res.error);
-        return;
-      }
-      setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.READY.text, totalPrice: prePrice }));
-    });
-  };
-  const handleLooseDriver = () => {
-    looseDriver(id).then((res) => {
-      if (res.error) {
-        checkTokenExpired(res.error);
-        return;
-      }
-      setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.NEW.text, totalPrice: 0, driver: null }));
-    });
-  };
-
-  const handleCancelTrip = () => {
-    cancelTrip(id).then((res) => {
-      if (res.error) {
-        checkTokenExpired(res.error);
-        return;
-      }
-      setTrip((prevState) => ({ ...prevState, status: TRIP_STATUSES.CANCEL.text }));
-    });
-  };
-
-  const onDeleteTripClick = () => {
-    deleteTrip(id).then((res) => {
-      if (res.error) {
-        checkTokenExpired(res.error);
-        return;
-      }
-      navigate("/trips");
-    });
-  };
-
-  const onApproveDriverClick = () => {
-    setConfirmModalState({
-      title: "Утверждение водителя",
-      message: "После утверждения водителя цена станет фиксированной, вы уверены?",
-      onAccept: handleConfirmDriver,
-    });
-    modalShow();
-  };
-
-  const onUntieDriverClick = () => {
-    setConfirmModalState({
-      title: "Отвязать водителя",
-      message: confirmQuestion,
-      onAccept: handleLooseDriver,
-    });
-    modalShow();
-  };
-
-  const onCancelTripClick = () => {
-    setConfirmModalState({
-      title: "Отмена поездки",
-      message: confirmQuestion,
-      onAccept: handleCancelTrip,
-    });
-    modalShow();
-  };
+  }, [trip]);
 
   const onUncofirmedTripsClick = () =>
     addUnconfirmedTrip({
@@ -142,11 +74,16 @@ export const Trip = ({
   const onEditTripClick = () => setTripEdit(true);
 
   const clickActions = {
-    onApproveDriverClick,
-    onUntieDriverClick,
-    onCancelTripClick,
-    onEditTripClick,
-    onDeleteTripClick,
+    ...getOnClickActions({
+      id,
+      checkTokenExpired: checkTokenExpired,
+      dispatch: dispatch,
+      modalShow: modalShow,
+      navigate: navigate,
+      prePrice,
+      setConfirmModalState: setConfirmModalState,
+    }),
+    onEditTripClick: onEditTripClick,
   };
 
   return (
@@ -172,11 +109,7 @@ export const Trip = ({
               </CardHeader>
 
               <div className="trip__content">
-                <UserInfoCard
-                  userName={trip?.driver?.userName ?? "Пока не найден"}
-                  userPrice={trip?.driver?.price}
-                  role={"driver"}
-                />
+                <UserInfoCard userName={trip.driver.userName} userPrice={trip.driver.price} role={"driver"} />
                 <UserInfoCard
                   userName={trip?.creator?.userName}
                   passengersNumber={trip.passengersNumber}
@@ -184,6 +117,9 @@ export const Trip = ({
                   role={"passenger"}
                 />
               </div>
+
+              <div className="trip__comments">{<Comments />}</div>
+
               <div className="trip__footer">
                 <TripPeoples>
                   <span>{trip.passengersNumber}</span>
