@@ -2,7 +2,7 @@ import "./Trip.scss";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { usePriceModalContext } from "../../../../hooks";
 import { Comments, ConfirmModal, PriceModal } from "../../../../components";
 import { UserInfoCard } from "../UserInfoCard";
@@ -19,17 +19,7 @@ import { FloatingLabel, Form } from "react-bootstrap";
 import { getError } from "../../../../utils/yup";
 import { addParentCommentInTrip } from "../../../../api/comment";
 
-export const Trip = ({
-  setTripEdit,
-  headerColor,
-  id,
-  checkTokenExpired,
-  navigate,
-  dispatch,
-  error,
-  handleError,
-  resetError,
-}) => {
+export const Trip = ({ setTripEdit, id, checkTokenExpired, navigate, dispatch, error, handleError, resetError }) => {
   const commentScrollRef = useRef(null);
   const trip = useSelector(selectTrip);
   const prePrice = useMemo(() => getTripPrePrice(trip?.driver?.price, trip?.creator?.price), [trip]);
@@ -123,7 +113,7 @@ export const Trip = ({
       {renderError(error)}
       {!error && (
         <>
-          <CardHeader headerColor={headerColor} trip={trip}>
+          <CardHeader trip={trip}>
             <span>{trip.fromWhere}</span>
             <RightArrow />
             <span>{trip.toWhere}</span>

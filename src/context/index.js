@@ -1,3 +1,3 @@
-export * from "./UnconfirmedTrips";
-export * from "./AuthModal";
-export * from "./PriceModal";
+export * from "./UnconfirmedTripsContext";
+export * from "./AuthModalContext";
+export * from "./PriceModalContext";

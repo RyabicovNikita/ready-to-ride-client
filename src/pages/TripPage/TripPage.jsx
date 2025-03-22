@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router";
 import { AuthModalContext } from "../../context";
 import { logoutUserIfTokenExpired } from "../../utils";
 import { useDispatch } from "react-redux";
-import { TRIP_STATUSES } from "../../constants";
 import { redGetTrip } from "../../store";
 import { useError, useLoader } from "../../hooks";
 import { getTripByID } from "../../api";
@@ -13,7 +12,6 @@ import { Container } from "react-bootstrap";
 
 export const TripPage = () => {
   const [tripEdit, setTripEdit] = useState(false);
-  const [headerColor, setHeaderColor] = useState("white");
   const { authModalView } = useContext(AuthModalContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -23,13 +21,6 @@ export const TripPage = () => {
   const { loading, hideLoader, showLoader } = useLoader();
 
   const { error, handleError, resetError } = useError();
-
-  const updateHeaderColor = (newStatus) => {
-    if (!newStatus) return;
-    const statusData = Object.values(TRIP_STATUSES).find((status) => status.text === newStatus);
-
-    setHeaderColor(statusData?.color ?? "white");
-  };
 
   const checkTokenExpired = useCallback(
     (error) => logoutUserIfTokenExpired({ error, handleError, dispatch, navigate, authModalView, resetError }),
@@ -45,7 +36,6 @@ export const TripPage = () => {
         return;
       }
       dispatch(redGetTrip(res.body));
-      updateHeaderColor(res.body.status);
     });
   }, []);
 
@@ -62,7 +52,6 @@ export const TripPage = () => {
         <Container className="trip" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
           {tripEdit ? (
             <EditTrip
-              headerColor={headerColor}
               setTripEdit={setTripEdit}
               id={id}
               dispatch={dispatch}
@@ -73,7 +62,6 @@ export const TripPage = () => {
             />
           ) : (
             <Trip
-              headerColor={headerColor}
               setTripEdit={setTripEdit}
               id={id}
               navigate={navigate}

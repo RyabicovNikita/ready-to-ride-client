@@ -21,16 +21,7 @@ const fieldsIsCorrected = (data) => {
   if (data.fromWhere === data.toWhere) return { fields: ["fromWhere", "toWhere"], message: "Выберите разные пункты" };
 };
 
-export const EditTrip = ({
-  setTripEdit,
-  headerColor,
-  id,
-  dispatch,
-  checkTokenExpired,
-  error,
-  handleError,
-  resetError,
-}) => {
+export const EditTrip = ({ setTripEdit, id, dispatch, checkTokenExpired, error, handleError, resetError }) => {
   const trip = useSelector(selectTrip);
   const [editData, setEditData] = useState(trip);
   const prePrice = useMemo(() => getTripPrePrice(editData?.driver?.price, editData?.creator?.price), [editData]);
@@ -67,7 +58,7 @@ export const EditTrip = ({
 
   return (
     <form onSubmit={onSubmit} className="editTrip">
-      <CardHeader headerColor={headerColor} trip={trip}>
+      <CardHeader trip={trip}>
         <FormSelector
           id={TRIP_PROPS.FROM}
           key={TRIP_PROPS.FROM}

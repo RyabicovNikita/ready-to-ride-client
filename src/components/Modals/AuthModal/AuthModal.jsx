@@ -2,17 +2,16 @@ import { Button, Form } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import { useCallback, useContext, useEffect } from "react";
-import { USER_PROPS, USER_SESSION_KEY } from "../../constants";
-import { setUser } from "../../store/slice";
+import { USER_PROPS, USER_SESSION_KEY } from "../../../constants";
+import { setUser } from "../../../store/slice";
 import { useDispatch } from "react-redux";
-import { authUser } from "../../api";
-import { useError } from "../../hooks";
-import { getFormParams } from "../../utils/yup/formParams";
-
-import { AuthModalContext } from "../../context";
-import { FormCheckbox, FormInput } from "../Form";
-import { getError } from "../../utils/yup";
-import { renderError } from "../../utils";
+import { authUser } from "../../../api";
+import { useError } from "../../../hooks";
+import { getFormParams } from "../../../utils/yup/formParams";
+import { AuthModalContext } from "../../../context";
+import { FormCheckbox, FormInput } from "../../Form";
+import { getError } from "../../../utils/yup";
+import { renderError } from "../../../utils";
 
 export const AuthModal = ({ show, isRegister }) => {
   const dispatch = useDispatch();

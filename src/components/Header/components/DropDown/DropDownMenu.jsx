@@ -15,7 +15,7 @@ export const DropDownMenu = ({ user, onRegisterClick, onLoginClick, onLogoutClic
         />
         {user?.id ? (
           <NavDropdown title={user.userName} id="basic-nav-dropdown" className="position-relative">
-            <NavDropdown.Item className="button non-border">Личный кабинет</NavDropdown.Item>
+            {/* <NavDropdown.Item className="button non-border">Личный кабинет</NavDropdown.Item> */}
             <NavDropdown.Item className="button non-border " onClick={onLogoutClick}>
               Выход
             </NavDropdown.Item>
