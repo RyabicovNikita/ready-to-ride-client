@@ -21,7 +21,6 @@ export const NewTrip = () => {
   const navigate = useNavigate();
   const {
     register,
-
     handleSubmit,
     formState: { errors },
   } = useForm(tripFormParams);
@@ -46,6 +45,10 @@ export const NewTrip = () => {
     handleError(errors);
   }, [errors]);
 
+  const onChange = () => {
+    resetError();
+  };
+
   const getErrorByProp = useCallback((propName) => getError(propName, errors), [errors]);
 
   return (
@@ -61,7 +64,7 @@ export const NewTrip = () => {
               error={getErrorByProp(TRIP_PROPS.FROM)}
               props={{
                 ...register(TRIP_PROPS.FROM, {
-                  onChange: resetError,
+                  onChange: onChange,
                 }),
               }}
             >
@@ -73,7 +76,7 @@ export const NewTrip = () => {
               error={getErrorByProp(TRIP_PROPS.TO)}
               props={{
                 ...register(TRIP_PROPS.TO, {
-                  onChange: resetError,
+                  onChange: onChange,
                 }),
               }}
             >
@@ -89,7 +92,7 @@ export const NewTrip = () => {
                   min={DateTime.now().plus({ hours: 0.5 }).toFormat("yyyy-MM-dd'T'T").toString()}
                   defaultValue={DateTime.now().toFormat("yyyy-MM-dd'T'T").toString()}
                   {...register(TRIP_PROPS.WHEN, {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 />
               </FloatingLabel>
@@ -102,7 +105,7 @@ export const NewTrip = () => {
                   className={`${getErrorByProp(TRIP_PROPS.PASS_PRICE) ? "is-invalid" : ""}`}
                   defaultValue={0}
                   {...register(TRIP_PROPS.PASS_PRICE, {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 />
               </FloatingLabel>
@@ -116,7 +119,7 @@ export const NewTrip = () => {
                   className={`${getErrorByProp(TRIP_PROPS.PEOPLES) ? "is-invalid" : ""}`}
                   defaultValue={1}
                   {...register(TRIP_PROPS.PEOPLES, {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 />
               </FloatingLabel>

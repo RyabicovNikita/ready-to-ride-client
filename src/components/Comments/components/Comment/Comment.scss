@@ -1,0 +1,31 @@
+.comment {
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  &__message {
+    width: fit-content;
+    white-space: pre-wrap;
+    background-color: #c7deff;
+    border-radius: 15px;
+    padding: 15px;
+    overflow-wrap: anywhere;
+    color: #000000;
+    max-width: 80%;
+    &-whenSend {
+      text-align: end;
+      color: #999999;
+    }
+    &-text {
+      max-height: 150px;
+      overflow-y: scroll;
+    }
+  }
+  &__icon {
+    width: 50px;
+    border-radius: 50%;
+  }
+}

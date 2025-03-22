@@ -79,6 +79,8 @@ export const TripPage = () => {
               navigate={navigate}
               dispatch={dispatch}
               error={error}
+              resetError={resetError}
+              handleError={handleError}
             />
           )}
         </Container>

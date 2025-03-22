@@ -1,17 +1,23 @@
 import "./Trip.scss";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { usePriceModalContext } from "../../../../hooks";
 import { Comments, ConfirmModal, PriceModal } from "../../../../components";
 import { UserInfoCard } from "../UserInfoCard";
-import { selectTrip, selectUser } from "../../../../store";
-import { addUnconfirmedTrip, getTripPrePrice, renderError } from "../../../../utils";
-import { UnconfirmedContext } from "../../../../context";
+import { redAddComment, selectTrip, selectUser } from "../../../../store";
+import { addUnconfirmedTrip, getTripPrePrice, logoutUserIfTokenExpired, renderError } from "../../../../utils";
+import { AuthModalContext, UnconfirmedContext } from "../../../../context";
 import { CardHeader } from "../CardHeader";
 import { RightArrow } from "../../../../icons/RightArrow";
 import { TripPeoples } from "../TripPeoples";
 import { ActionButtons } from "./components";
 import { getOnClickActions } from "./utils";
+import { useForm } from "react-hook-form";
+import { FloatingLabel, Form } from "react-bootstrap";
+import { getError } from "../../../../utils/yup";
+import { addParentCommentInTrip } from "../../../../api/comment";
 
 export const Trip = ({
   setTripEdit,
@@ -22,6 +28,8 @@ export const Trip = ({
   navigate,
   dispatch,
   error,
+  handleError,
+  resetError,
 }) => {
   const trip = useSelector(selectTrip);
   const prePrice = useMemo(() => getTripPrePrice(trip?.driver?.price, trip?.creator?.price), [trip]);
@@ -65,6 +73,46 @@ export const Trip = ({
     onEditTripClick: onEditTripClick,
   };
 
+  const { authModalView } = useContext(AuthModalContext);
+
+  const shapeObject = {
+    comment: yup.string().required("Введите комментарий").max(10000, "Комментарий не может превышать 10 тысяч символов"),
+  };
+
+  const formSchema = yup.object().shape(shapeObject);
+
+  const formParams = {
+    defaulValues: {},
+    resolver: yupResolver(formSchema),
+  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    clearErrors,
+    formState: { errors },
+  } = useForm(formParams);
+
+  const commentError = useMemo(() => getError("comment", errors), [errors]);
+
+  const onSubmit = async ({ comment }) => {
+    const res = await addParentCommentInTrip(id, userID, comment);
+    reset({ comment: "" });
+    resetError();
+    if (res.error) {
+      logoutUserIfTokenExpired({
+        error: res.error,
+        authModalView: authModalView,
+        handleError: handleError,
+        dispatch: dispatch,
+        navigate: navigate,
+        resetError: resetError,
+      });
+      return;
+    }
+    dispatch(redAddComment(res.body));
+  };
+
   return (
     <>
       <PriceModal />
@@ -88,7 +136,35 @@ export const Trip = ({
             />
           </div>
 
-          <div className="trip__comments">{<Comments />}</div>
+          <div className="comments">
+            {<Comments />}
+            <Form className="mt-4 mb-4 newComment d-flex gap-3" onSubmit={handleSubmit(onSubmit)}>
+              <FloatingLabel
+                controlId="floatingInput"
+                label="Новый комментарий"
+                className={`w-100 ${commentError ? "text-danger" : ""}`}
+              >
+                <textarea
+                  name="comment"
+                  className={`comment form-control ${commentError ? "is-invalid" : ""}`}
+                  class="form-control"
+                  placeholder="Новый комментарий"
+                  {...register("comment", {
+                    onChange: () => {
+                      clearErrors();
+                      resetError();
+                    },
+                  })}
+                />
+              </FloatingLabel>
+              <div className="d-flex align-items-center">
+                <button className="comments__send mr-3 d-flex align-items-center" type="submit">
+                  <i class="bi bi-send"></i>
+                </button>
+              </div>
+            </Form>
+            {renderError(error)}
+          </div>
 
           <div className="trip__footer">
             <TripPeoples>

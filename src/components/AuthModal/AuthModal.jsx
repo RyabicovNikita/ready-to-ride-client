@@ -8,14 +8,13 @@ import { useDispatch } from "react-redux";
 import { authUser } from "../../api";
 import { useError } from "../../hooks";
 import { getFormParams } from "../../utils/yup/formParams";
-import { useNavigate } from "react-router";
+
 import { AuthModalContext } from "../../context";
 import { FormCheckbox, FormInput } from "../Form";
 import { getError } from "../../utils/yup";
 import { renderError } from "../../utils";
 
 export const AuthModal = ({ show, isRegister }) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error, handleError, resetError } = useError();
   const { authModalHide } = useContext(AuthModalContext);
@@ -43,7 +42,6 @@ export const AuthModal = ({ show, isRegister }) => {
     dispatch(setUser(user));
     reset();
     authModalHide();
-    navigate(-1);
   };
 
   useEffect(() => {
@@ -57,10 +55,10 @@ export const AuthModal = ({ show, isRegister }) => {
 
   const getRegProps = (propName) => ({
     ...register(propName, {
-      onChange: resetError,
+      onChange: () => resetError(),
     }),
   });
-
+  console.log(errors);
   const getErrorByProp = useCallback((propName) => getError(propName, errors), [errors]);
 
   return (

@@ -56,14 +56,12 @@ export const EditTrip = ({
       checkTokenExpired(res.error);
       return;
     }
-    console.log(res.body);
     dispatch(redGetTrip(res.body));
     setTripEdit(false);
   };
 
   const onInputChange = (propName, newValue) => {
     resetError();
-
     setEditData((prevState) => ({ ...prevState, [propName]: newValue }));
   };
 

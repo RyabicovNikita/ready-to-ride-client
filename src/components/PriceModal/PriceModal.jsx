@@ -60,14 +60,14 @@ export const PriceModal = () => {
 
   const {
     register,
-    reset,
     handleSubmit,
+    clearErrors,
     formState: { errors },
   } = useForm(formParams);
 
   const getRegProps = (propName) => ({
     ...register(propName, {
-      onChange: reset,
+      onChange: () => clearErrors(),
     }),
   });
 

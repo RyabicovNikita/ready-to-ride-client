@@ -77,6 +77,10 @@ export const Trips = ({ onlyUserTrips }) => {
     setIsFilter((prevState) => !prevState);
   };
 
+  const onChange = () => {
+    resetError();
+  };
+
   return (
     <div className="d-flex flex-column gap-3 h-100">
       {loading && <Loader />}
@@ -96,7 +100,7 @@ export const Trips = ({ onlyUserTrips }) => {
                   aria-label="Sizing example input"
                   aria-describedby="inputGroup-sizing-default"
                   {...register("fromWhere", {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 >
                   {CITIES.map((city) => (
@@ -114,7 +118,7 @@ export const Trips = ({ onlyUserTrips }) => {
                   aria-label="Sizing example input"
                   aria-describedby="inputGroup-sizing-default"
                   {...register("toWhere", {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 >
                   {CITIES.map((i) => (
@@ -132,7 +136,7 @@ export const Trips = ({ onlyUserTrips }) => {
                   placeholder=""
                   aria-label="Дата"
                   {...register("dateTrip", {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 />
                 <span class="input-group-text">Время</span>
@@ -142,7 +146,7 @@ export const Trips = ({ onlyUserTrips }) => {
                   placeholder=""
                   aria-label="Время"
                   {...register("timeTrip", {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 />
               </div>
@@ -158,7 +162,7 @@ export const Trips = ({ onlyUserTrips }) => {
                   placeholder=""
                   aria-label="От"
                   {...register("priceFrom", {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 />
                 <span class="input-group-text">До</span>
@@ -168,7 +172,7 @@ export const Trips = ({ onlyUserTrips }) => {
                   placeholder=""
                   aria-label="До"
                   {...register("priceTo", {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 />
               </div>
@@ -185,7 +189,7 @@ export const Trips = ({ onlyUserTrips }) => {
                     placeholder=""
                     aria-label="От"
                     {...register("numberPeopleFrom", {
-                      onChange: resetError,
+                      onChange: onChange,
                     })}
                   />
                   <span class="input-group-text">До</span>
@@ -195,7 +199,7 @@ export const Trips = ({ onlyUserTrips }) => {
                     placeholder=""
                     aria-label="До"
                     {...register("numberPeopleTo", {
-                      onChange: resetError,
+                      onChange: onChange,
                     })}
                   />
                 </div>
@@ -210,7 +214,7 @@ export const Trips = ({ onlyUserTrips }) => {
                   aria-label="Sizing example input"
                   aria-describedby="inputGroup-sizing-default"
                   {...register("notDriver", {
-                    onChange: resetError,
+                    onChange: onChange,
                   })}
                 >
                   <option value={SELECTED_VALUES.NOT_SELECT}>{SELECTED_VALUES.NOT_SELECT}</option>
@@ -220,7 +224,13 @@ export const Trips = ({ onlyUserTrips }) => {
               </div>
 
               <div className="d-flex justify-content-center">
-                <button onClick={() => reset()} className="btn btn-secondary w-50 m-2">
+                <button
+                  onClick={() => {
+                    reset();
+                    resetError();
+                  }}
+                  className="btn btn-secondary w-50 m-2"
+                >
                   Очистить фильтр
                 </button>
                 <button type="submit" className="btn btn-dark w-25 m-2">

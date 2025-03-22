@@ -1,3 +1,4 @@
+import { mergeStringsBySpace } from "../../../../formatters/formatString";
 import { ParentComment } from "./components";
 
 export const CommentSection = ({ userName, created_at, text, childrenComments = [] }) => (
@@ -7,7 +8,7 @@ export const CommentSection = ({ userName, created_at, text, childrenComments = 
       <div class="row">
         <div class="col-10 d-flex gap-3">
           <h5>{userName}</h5>
-          <span>{created_at}</span>
+          <span>{mergeStringsBySpace([created_at.date, created_at.time])}</span>
         </div>
 
         <div class="col-2">
