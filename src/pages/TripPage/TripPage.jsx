@@ -3,9 +3,9 @@ import { EditTrip, Trip } from "./components";
 import { useNavigate, useParams } from "react-router";
 import { AuthModalContext } from "../../context";
 import { logoutUserIfTokenExpired } from "../../utils";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { TRIP_STATUSES } from "../../constants";
-import { redGetTrip, selectTrip } from "../../store";
+import { redGetTrip } from "../../store";
 import { useError, useLoader } from "../../hooks";
 import { getTripByID } from "../../api";
 import { Loader, MgContainer } from "../../components";
@@ -13,7 +13,6 @@ import { Container } from "react-bootstrap";
 
 export const TripPage = () => {
   const [tripEdit, setTripEdit] = useState(false);
-  const trip = useSelector(selectTrip);
   const [headerColor, setHeaderColor] = useState("white");
   const { authModalView } = useContext(AuthModalContext);
   const navigate = useNavigate();
@@ -25,11 +24,11 @@ export const TripPage = () => {
 
   const { error, handleError, resetError } = useError();
 
-  const updateHeaderColor = () => {
-    if (!trip.status) return;
-    const status = Object.values(TRIP_STATUSES).find((status) => status.text === trip.status);
+  const updateHeaderColor = (newStatus) => {
+    if (!newStatus) return;
+    const statusData = Object.values(TRIP_STATUSES).find((status) => status.text === newStatus);
 
-    setHeaderColor(status?.color ?? "white");
+    setHeaderColor(statusData?.color ?? "white");
   };
 
   const checkTokenExpired = useCallback(
@@ -46,8 +45,10 @@ export const TripPage = () => {
         return;
       }
       dispatch(redGetTrip(res.body));
+      updateHeaderColor(res.body.status);
     });
   }, []);
+
   return (
     <>
       {loading && <Loader />}
@@ -73,7 +74,6 @@ export const TripPage = () => {
           ) : (
             <Trip
               headerColor={headerColor}
-              updateHeaderColor={updateHeaderColor}
               setTripEdit={setTripEdit}
               id={id}
               navigate={navigate}

@@ -32,7 +32,7 @@ export const RoutesContainer = () => (
     <Route
       path="/trips/:id"
       element={
-        <FullScreenContainer>
+        <FullScreenContainer styles={{ overflowY: "hidden" }}>
           <TripPage />
         </FullScreenContainer>
       }

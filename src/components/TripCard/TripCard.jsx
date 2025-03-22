@@ -1,5 +1,5 @@
 import "./TripCard.scss";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { UnconfirmedContext } from "../../context";
 import { useNavigate } from "react-router";
 import { addUnconfirmedTrip } from "../../utils";
@@ -17,22 +17,13 @@ export const TripCard = ({
   passengersNumber,
   curUserIsDriver,
   status,
+  statusColor,
 }) => {
-  const [headerColor, setHeaderColor] = useState("white");
   const { unconfirmedTrips, setUnconfirmedTrips } = useContext(UnconfirmedContext);
   const { priceModalView } = usePriceModalContext();
   const navigate = useNavigate();
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
-  const updateHeaderColor = () => {
-    if (!status) return;
-    const statusData = Object.values(TRIP_STATUSES).find((i) => i.text === status);
-
-    setHeaderColor(statusData?.color ?? "white");
-  };
-
-  useEffect(() => {
-    updateHeaderColor();
-  }, [status]);
+  console.log(statusColor);
   return (
     <div
       className="trip-card card"
@@ -75,7 +66,7 @@ export const TripCard = ({
           {isUnconfirmedTrips ? "х" : "+"}
         </button>
       )}
-      <div className="trip-card__statusLine" style={{ backgroundColor: headerColor }}>
+      <div className="trip-card__statusLine" style={{ backgroundColor: statusColor }}>
         {status}
       </div>
     </div>

@@ -2,7 +2,6 @@
   &__content {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     gap: 20px;
   }
 
@@ -21,7 +20,7 @@
     }
     &-text {
       max-height: 150px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
   }
   &__icon {

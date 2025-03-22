@@ -22,12 +22,14 @@ const tripSlice = createSlice({
   name: "trip",
   initialState: initialTripState,
   reducers: {
-    redGetTrip: (state, { payload }) => ({ ...payload }),
+    redGetTrip: (state, { payload }) => ({
+      ...payload,
+    }),
     redConfirmDriver: (state, { payload }) => ({ ...state, status: TRIP_STATUSES.READY.text, totalPrice: payload }),
     redLooseDriver: (state) => ({ ...state, status: TRIP_STATUSES.NEW.text, totalPrice: 0, driver: null }),
     redCancelTrip: (state) => ({ ...state, status: TRIP_STATUSES.CANCEL.text }),
     redDeleteTrip: () => initialTripState,
-    redAddComment: (state, { payload }) => ({ ...state, comments: [payload, ...state.comments] }),
+    redAddComment: (state, { payload }) => ({ ...state, comments: [...state.comments, payload] }),
   },
   extraReducers: () => {},
 });

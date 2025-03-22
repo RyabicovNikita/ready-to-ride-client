@@ -82,10 +82,10 @@ export const Trips = ({ onlyUserTrips }) => {
   };
 
   return (
-    <div className="d-flex flex-column gap-3 h-100">
+    <div className="d-flex flex-column gap-3 h-100 trips-view">
       {loading && <Loader />}
       <PriceModal />
-      <div className="trips card" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
+      <div className="trips" style={{ filter: `blur(${loading ? "10px" : "0"})` }}>
         <div className="d-flex flex-column align-items-center">
           <div class="card mt-5">
             <form onSubmit={handleSubmit(onSubmit)} className="trip__card-body card-body">
@@ -256,6 +256,7 @@ export const Trips = ({ onlyUserTrips }) => {
                 toWhere={trip.toWhere}
                 passengersNumber={trip.passengersNumber}
                 status={trip.status}
+                statusColor={trip.statusColor}
               />
             ))}
         </div>

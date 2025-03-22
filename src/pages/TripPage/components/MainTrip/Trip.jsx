@@ -1,7 +1,7 @@
 import "./Trip.scss";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePriceModalContext } from "../../../../hooks";
 import { Comments, ConfirmModal, PriceModal } from "../../../../components";
@@ -22,7 +22,6 @@ import { addParentCommentInTrip } from "../../../../api/comment";
 export const Trip = ({
   setTripEdit,
   headerColor,
-  updateHeaderColor,
   id,
   checkTokenExpired,
   navigate,
@@ -31,6 +30,7 @@ export const Trip = ({
   handleError,
   resetError,
 }) => {
+  const commentScrollRef = useRef(null);
   const trip = useSelector(selectTrip);
   const prePrice = useMemo(() => getTripPrePrice(trip?.driver?.price, trip?.creator?.price), [trip]);
   const [confirmModalState, setConfirmModalState] = useState("");
@@ -46,7 +46,7 @@ export const Trip = ({
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
 
   useEffect(() => {
-    updateHeaderColor();
+    if (commentScrollRef) commentScrollRef.current.scrollIntoView();
   }, [trip]);
 
   const onUncofirmedTripsClick = () =>
@@ -95,7 +95,7 @@ export const Trip = ({
 
   const commentError = useMemo(() => getError("comment", errors), [errors]);
 
-  const onSubmit = async ({ comment }) => {
+  const submitNewComment = async ({ comment }) => {
     const res = await addParentCommentInTrip(id, userID, comment);
     reset({ comment: "" });
     resetError();
@@ -111,8 +111,11 @@ export const Trip = ({
       return;
     }
     dispatch(redAddComment(res.body));
+    if (commentScrollRef) commentScrollRef.current.scrollIntoView();
   };
+  const commentsAvailable = userID === trip?.creator?.id || userID === trip?.driver?.id;
 
+  console.log(trip);
   return (
     <>
       <PriceModal />
@@ -136,36 +139,36 @@ export const Trip = ({
             />
           </div>
 
-          <div className="comments">
-            {<Comments />}
-            <Form className="mt-4 mb-4 newComment d-flex gap-3" onSubmit={handleSubmit(onSubmit)}>
-              <FloatingLabel
-                controlId="floatingInput"
-                label="Новый комментарий"
-                className={`w-100 ${commentError ? "text-danger" : ""}`}
-              >
-                <textarea
-                  name="comment"
-                  className={`comment form-control ${commentError ? "is-invalid" : ""}`}
-                  class="form-control"
-                  placeholder="Новый комментарий"
-                  {...register("comment", {
-                    onChange: () => {
-                      clearErrors();
-                      resetError();
-                    },
-                  })}
-                />
-              </FloatingLabel>
-              <div className="d-flex align-items-center">
-                <button className="comments__send mr-3 d-flex align-items-center" type="submit">
-                  <i class="bi bi-send"></i>
-                </button>
-              </div>
-            </Form>
-            {renderError(error)}
+          <div className="comments mb-3">
+            {<Comments commentsAvailable={commentsAvailable} commentScrollRef={commentScrollRef} />}
+            {commentsAvailable && (
+              <Form className="newComment mt-4 mb-4 d-flex gap-3" onSubmit={handleSubmit(submitNewComment)}>
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Новый комментарий"
+                  className={`w-100 ${commentError ? "text-danger" : ""}`}
+                >
+                  <textarea
+                    name="comment"
+                    className={`comment form-control ${commentError ? "is-invalid" : ""}`}
+                    class="form-control"
+                    placeholder="Новый комментарий"
+                    {...register("comment", {
+                      onChange: () => {
+                        clearErrors();
+                        resetError();
+                      },
+                    })}
+                  />
+                </FloatingLabel>
+                <div className="d-flex align-items-center">
+                  <button className="comments__send mr-3 d-flex align-items-center" type="submit">
+                    <i class="bi bi-send"></i>
+                  </button>
+                </div>
+              </Form>
+            )}
           </div>
-
           <div className="trip__footer">
             <TripPeoples>
               <span>{trip.passengersNumber}</span>

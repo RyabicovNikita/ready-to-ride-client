@@ -1,4 +1,7 @@
+.trips-view {
+  overflow-y: hidden;
+}
 .trips {
   height: inherit;
-  overflow-y: scroll;
+  overflow-y: auto;
 }

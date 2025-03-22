@@ -1,7 +1,7 @@
+import "./Comments.scss";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FloatingLabel, Form } from "react-bootstrap";
-import "./Comments.scss";
 import { useForm } from "react-hook-form";
 import { useContext, useMemo } from "react";
 import { getError } from "../../utils/yup";
@@ -64,7 +64,6 @@ export const CommentsWihNesting = () => {
       <div>
         <div class="row">
           <div class="col-md-12">
-            <h3 class="text-center mb-5">Комментарии</h3>
             <div className="comments__content">
               {comments.map(({ id, text, created_at, user }) => (
                 <CommentSection

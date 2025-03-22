@@ -65,6 +65,7 @@ export const UnconfirmedTrips = () => {
               fromWhere={trip.fromWhere}
               toWhere={trip.toWhere}
               passengersNumber={trip.passengersNumber}
+              statusColor={trip.statusColor}
             />
           ))
         )}

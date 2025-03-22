@@ -1,4 +1,5 @@
 .trip {
+  min-width: 1140px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -67,5 +68,8 @@
         justify-content: flex-end;
       }
     }
+  }
+  *::-webkit-scrollbar-track {
+    border-radius: 5px;
   }
 }
