@@ -10,8 +10,7 @@ const shapeTrip = {
   toWhere: yup
     .string()
     .required("Выберите куда хотите поехать")
-    .notOneOf([CITIES[0]], "Выберите куда хотите поехать")
-    .notOneOf([yup.ref("fromWhere")], "Выберите разные пункты назначения"),
+    .notOneOf([CITIES[0], yup.ref("fromWhere")], "Выберите куда хотите поехать"),
 
   passengerPrice: yup.number().required("Укажите стоимость поездки").moreThan(0, "Стоимость должна быть больше 0"),
 

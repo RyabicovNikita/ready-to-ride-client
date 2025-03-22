@@ -61,7 +61,7 @@ export const Comments = () => {
 
   return (
     <div class="comments container mb-5 mt-5">
-      <div class="card">
+      <div>
         <div class="row">
           <div class="col-md-12">
             <h3 class="text-center mb-5">Комментарии</h3>
