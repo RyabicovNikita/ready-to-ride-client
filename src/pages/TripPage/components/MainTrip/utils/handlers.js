@@ -8,7 +8,7 @@ export const getHandlers = ({ id, prePrice, checkTokenExpired, dispatch }) => {
         checkTokenExpired(res.error);
         return;
       }
-      dispatch(redConfirmDriver(id, prePrice));
+      dispatch(redConfirmDriver(prePrice));
     });
   };
   const handleLooseDriver = () => {
