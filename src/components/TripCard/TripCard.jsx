@@ -23,7 +23,7 @@ export const TripCard = ({
   const { priceModalView } = usePriceModalContext();
   const navigate = useNavigate();
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
-  console.log(statusColor);
+
   return (
     <div
       className="trip-card card"

@@ -22,7 +22,9 @@ import { addParentCommentInTrip } from "../../../../api/comment";
 export const Trip = ({ setTripEdit, id, checkTokenExpired, navigate, dispatch, error, handleError, resetError }) => {
   const commentScrollRef = useRef(null);
   const trip = useSelector(selectTrip);
+
   const prePrice = useMemo(() => getTripPrePrice(trip?.driver?.price, trip?.creator?.price), [trip]);
+
   const [confirmModalState, setConfirmModalState] = useState("");
   const [confirmModalShow, setConfirmModalShow] = useState(false);
 
@@ -105,7 +107,6 @@ export const Trip = ({ setTripEdit, id, checkTokenExpired, navigate, dispatch, e
   };
   const commentsAvailable = userID === trip?.creator?.id || userID === trip?.driver?.id;
 
-  console.log(trip);
   return (
     <>
       <PriceModal />

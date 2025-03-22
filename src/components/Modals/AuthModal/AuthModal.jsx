@@ -57,7 +57,7 @@ export const AuthModal = ({ show, isRegister }) => {
       onChange: () => resetError(),
     }),
   });
-  console.log(errors);
+
   const getErrorByProp = useCallback((propName) => getError(propName, errors), [errors]);
 
   return (
