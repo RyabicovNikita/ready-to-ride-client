@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 
 export function sortArrByCreateDate(array) {
+  if (!Array.isArray(array)) return [];
   const fullDateFormat = "dd.MM.yyyy HH:mm:ss";
   return [...array].sort((a, b) => {
     // Преобразуем строки даты в объекты DateTime с помощью Luxon
