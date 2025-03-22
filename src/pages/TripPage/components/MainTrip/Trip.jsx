@@ -10,7 +10,7 @@ import { redAddComment, selectTrip, selectUser } from "../../../../store";
 import { addUnconfirmedTrip, getTripPrePrice, logoutUserIfTokenExpired, renderError } from "../../../../utils";
 import { AuthModalContext, UnconfirmedContext } from "../../../../context";
 import { CardHeader } from "../CardHeader";
-import { RightArrow } from "../../../../icons/RightArrow";
+
 import { TripPeoples } from "../TripPeoples";
 import { ActionButtons } from "./components";
 import { getOnClickActions } from "./utils";
@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { FloatingLabel, Form } from "react-bootstrap";
 import { getError } from "../../../../utils/yup";
 import { addParentCommentInTrip } from "../../../../api/comment";
+import { TravelInfoCard } from "../TravelInfoCard";
 
 export const Trip = ({ setTripEdit, id, checkTokenExpired, navigate, dispatch, error, handleError, resetError }) => {
   const commentScrollRef = useRef(null);
@@ -38,7 +39,7 @@ export const Trip = ({ setTripEdit, id, checkTokenExpired, navigate, dispatch, e
   const isUnconfirmedTrips = unconfirmedTrips?.find((i) => i.id === id);
 
   useEffect(() => {
-    if (commentScrollRef) commentScrollRef.current.scrollIntoView();
+    if (commentScrollRef?.current) commentScrollRef.current.scrollIntoView();
   }, [trip]);
 
   const onUncofirmedTripsClick = () =>
@@ -103,7 +104,7 @@ export const Trip = ({ setTripEdit, id, checkTokenExpired, navigate, dispatch, e
       return;
     }
     dispatch(redAddComment(res.body));
-    if (commentScrollRef) commentScrollRef.current.scrollIntoView();
+    if (commentScrollRef?.current) commentScrollRef.current.scrollIntoView();
   };
   const commentsAvailable = userID === trip?.creator?.id || userID === trip?.driver?.id;
 
@@ -114,13 +115,16 @@ export const Trip = ({ setTripEdit, id, checkTokenExpired, navigate, dispatch, e
       {renderError(error)}
       {!error && (
         <>
-          <CardHeader trip={trip}>
-            <span>{trip.fromWhere}</span>
-            <RightArrow />
-            <span>{trip.toWhere}</span>
-          </CardHeader>
+          <CardHeader status={trip.status} statusColor={trip.statusColor}></CardHeader>
 
-          <div className="trip__content">
+          <TravelInfoCard
+            dateTravel={trip.dateTravel}
+            timeTravel={trip.timeTravel}
+            fromWhere={trip.fromWhere}
+            toWhere={trip.toWhere}
+          />
+
+          <div className="trip__participants">
             <UserInfoCard userName={trip?.driver?.userName} userPrice={trip?.driver?.price} role={"driver"} />
             <UserInfoCard
               userName={trip?.creator?.userName}

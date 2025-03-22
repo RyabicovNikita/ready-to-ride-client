@@ -3,8 +3,8 @@ import { TRIP_STATUSES } from "./../constants/statuses";
 
 export const createTrip = (data) => request("trips/new", "POST", { ...data, status: TRIP_STATUSES.NEW.text });
 
-export const updateTrip = ({ fromWhere, toWhere, passengerPrice, numberPeople, tripID }) =>
-  request(`trips/${tripID}`, "PATCH", { fromWhere, toWhere, passengerPrice, numberPeople });
+export const updateTrip = ({ fromWhere, toWhere, passengerPrice, numberPeople, datetime, tripID }) =>
+  request(`trips/${tripID}`, "PATCH", { fromWhere, toWhere, passengerPrice, numberPeople, datetime });
 
 export const deleteTrip = (id) => request(`trips/${id}`, "DELETE");
 

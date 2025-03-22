@@ -13,6 +13,8 @@ import { TripPeoples } from "../TripPeoples";
 import { ActionButtons } from "./components";
 import { redGetTrip, selectTrip } from "../../../../store";
 import { useSelector } from "react-redux";
+import { DateTime } from "luxon";
+import { convertToDatetimeLocal } from "../../../../formatters/formatDate";
 
 const fieldsIsCorrected = (data) => {
   if (!data.fromWhere || data.fromWhere === CITIES[0])
@@ -23,7 +25,10 @@ const fieldsIsCorrected = (data) => {
 
 export const EditTrip = ({ setTripEdit, id, dispatch, checkTokenExpired, error, handleError, resetError }) => {
   const trip = useSelector(selectTrip);
-  const [editData, setEditData] = useState(trip);
+  const [editData, setEditData] = useState({
+    ...(trip ?? {}),
+    datetime: convertToDatetimeLocal(trip.dateTravel, trip.timeTravel),
+  });
   const prePrice = useMemo(() => getTripPrePrice(editData?.driver?.price, editData?.creator?.price), [editData]);
 
   const onSubmit = async (e) => {
@@ -40,6 +45,7 @@ export const EditTrip = ({ setTripEdit, id, dispatch, checkTokenExpired, error, 
       toWhere: editData.toWhere,
       numberPeople: editData.passengersNumber,
       passengerPrice: editData.creator.price,
+      datetime: editData.datetime,
       tripID: id,
     });
 
@@ -55,34 +61,52 @@ export const EditTrip = ({ setTripEdit, id, dispatch, checkTokenExpired, error, 
     resetError();
     setEditData((prevState) => ({ ...prevState, [propName]: newValue }));
   };
-
+  console.log(trip);
   return (
-    <form onSubmit={onSubmit} className="editTrip">
-      <CardHeader trip={trip}>
-        <FormSelector
-          id={TRIP_PROPS.FROM}
-          key={TRIP_PROPS.FROM}
-          error={error}
-          options={CITIES}
-          props={{
-            value: editData?.fromWhere,
-            onChange: ({ target }) => onInputChange("fromWhere", target.value),
-          }}
-        >
-          Откуда
-        </FormSelector>
-        <RightArrow />
-        <FormSelector
-          id={TRIP_PROPS.TO}
-          key={TRIP_PROPS.TO}
-          error={error}
-          options={CITIES}
-          props={{ value: editData?.toWhere, onChange: ({ target }) => onInputChange("toWhere", target.value) }}
-        >
-          Куда
-        </FormSelector>
-      </CardHeader>
-      <div className="trip__content">
+    <form onSubmit={onSubmit} className="editTrip container">
+      <CardHeader status={trip.status} statusColor={trip.statusColor} />
+      <div className="trip__travel">
+        <div className="d-flex gap-3">
+          <FormSelector
+            id={TRIP_PROPS.FROM}
+            key={TRIP_PROPS.FROM}
+            error={error}
+            options={CITIES}
+            props={{
+              value: editData?.fromWhere,
+              onChange: ({ target }) => onInputChange("fromWhere", target.value),
+            }}
+          >
+            Откуда
+          </FormSelector>
+          <RightArrow />
+          <FormSelector
+            id={TRIP_PROPS.TO}
+            key={TRIP_PROPS.TO}
+            error={error}
+            options={CITIES}
+            props={{ value: editData?.toWhere, onChange: ({ target }) => onInputChange("toWhere", target.value) }}
+          >
+            Куда
+          </FormSelector>
+        </div>
+
+        <div className="trip__travel-datetime">
+          <FormInput
+            id={TRIP_PROPS.WHEN}
+            key={TRIP_PROPS.WHEN}
+            error={error}
+            type="datetime-local"
+            props={{
+              min: DateTime.now().plus({ hours: 0.5 }).toFormat("yyyy-MM-dd'T'T").toString(),
+              max: DateTime.now().plus({ years: 1 }).toFormat("yyyy-MM-dd'T'T").toString(),
+              defaultValue: editData.datetime,
+              onChange: ({ target }) => onInputChange("datetime", target.value),
+            }}
+          />
+        </div>
+      </div>
+      <div className="trip__participants">
         <UserInfoCard
           userName={editData?.driver?.userName ?? "Пока не найден"}
           userPrice={editData?.driver?.price}
