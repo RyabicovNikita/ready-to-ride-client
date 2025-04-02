@@ -1,11 +1,13 @@
 .trip-card {
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
   cursor: pointer;
   width: 50%;
   flex-direction: row;
   place-items: center;
   padding: 20px;
   box-sizing: border-box;
-  border-radius: 35px;
+  border-radius: 20px;
   margin: 10px auto 10px auto;
   &__datetime {
     display: flex;
@@ -26,4 +28,34 @@
     right: 0;
     top: 0;
   }
+}
+
+
+
+
+@media (max-width: 767px) {
+  .trip-card {
+    width: 90%;
+    
+  }
+    /* Стили для мобильных устройств */
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .trip-card {
+    width: 90%;  
+  }
+}
+
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .trip-card {
+    width: 90%;  
+  }
+}
+
+
+@media (min-width: 1441px) {
+    /* Стили для больших десктопов */
 }

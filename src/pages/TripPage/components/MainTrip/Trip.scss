@@ -1,5 +1,4 @@
 .trip {
-  min-width: 1140px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -48,6 +47,7 @@
     font-size: 18px;
   }
   &__footer {
+    gap:5px;
     &-seats-icon {
       width: 20px;
     }
