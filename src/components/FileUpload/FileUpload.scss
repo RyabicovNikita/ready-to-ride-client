@@ -1,0 +1,97 @@
+$file-upload-width: 320px; // Ширина для мобильных устройств
+$file-upload-max-width: 500px; // Максимальная ширина окна
+
+$file-upload-padding: 15px;
+$file-upload-padding-mobile: 10px;
+
+$file-upload-box-color: #fff;
+$file-upload-box-border: 2px solid #333;
+$file-upload-title-color: #333;
+
+.file-upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.file-upload-box {
+  width: 100%;
+  max-width: $file-upload-max-width;
+  padding: $file-upload-padding;
+  border: $file-upload-box-border;
+  border-radius: 10px;
+  background-color: $file-upload-box-color;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+
+  // Стили для перетаскивания
+  &.dragging {
+    background-color: #f5f5f5;
+    border-color: #444;
+  }
+
+  h3 {
+    font-size: 20px;
+    color: $file-upload-title-color;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+
+  .file-input {
+    display: none;
+  }
+
+
+  .error-message {
+    font-size: 12px;
+    color: #ff4d4f;
+    margin-top: 10px;
+  }
+
+  // Адаптация для мобильных устройств
+  @media (max-width: 600px) {
+    padding: $file-upload-padding-mobile;
+
+    h3 {
+      font-size: 16px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+
+   
+
+    .file-name {
+      font-size: 10px;
+    }
+
+    .error-message {
+      font-size: 10px;
+    }
+  }
+
+  // Для экранов очень маленьких мобильных устройств
+  @media (max-width: 400px) {
+    .file-upload-box {
+      padding: 8px;
+    }
+
+   
+
+    .file-name {
+      font-size: 8px;
+    }
+
+    .error-message {
+      font-size: 8px;
+    }
+  }
+}

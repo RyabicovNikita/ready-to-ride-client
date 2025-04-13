@@ -1,6 +1,6 @@
 import { Form } from "react-bootstrap";
 
-export const FormInput = ({ id, className, error, children, type = "string", props, placeholder = "" }) => {
+export const FormInput = ({ id, className, error, children, type = "string", disabled, props, placeholder = "" }) => {
   const curError = error?.fields ? error?.fields?.includes(id) : error;
   return (
     <div className={className}>
@@ -11,6 +11,7 @@ export const FormInput = ({ id, className, error, children, type = "string", pro
         name={id}
         type={type}
         placeholder={placeholder}
+        disabled={disabled}
         {...props}
       />
     </div>

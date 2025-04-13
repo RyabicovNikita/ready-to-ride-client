@@ -7,7 +7,7 @@ import { setUser } from "../../../store/slice";
 import { useDispatch } from "react-redux";
 import { authUser } from "../../../api";
 import { useError } from "../../../hooks";
-import { getFormParams } from "../../../utils/yup/formParams";
+import { getAuthFormParams } from "../../../utils/yup/formParams";
 import { AuthModalContext } from "../../../context";
 import { FormCheckbox, FormInput } from "../../Form";
 import { getError } from "../../../utils/yup";
@@ -23,7 +23,7 @@ export const AuthModal = ({ show, isRegister }) => {
     handleSubmit,
     clearErrors,
     formState: { errors },
-  } = useForm(getFormParams(isRegister));
+  } = useForm(getAuthFormParams(isRegister));
 
   const onSubmit = async ({ email, password, firstName, lastName, isDriver }) => {
     const { error = "", body: user = null } = await authUser(isRegister, {

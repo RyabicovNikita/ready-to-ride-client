@@ -1,0 +1,62 @@
+$file-preview-size: 100px;
+$file-preview-size-mobile: 80px;
+.account-form {
+  max-width: fit-content;
+  input:disabled {
+    border:none;
+    background-color: white ;
+  }
+}
+
+.file-preview {
+  position: relative;
+  margin-top: 15px;
+  text-align: center;
+
+  img {
+    width: $file-preview-size;
+    height: $file-preview-size;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .remove-button {
+    background-color: rgba(255, 255, 255, 0);
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+
+}
+
+@media (max-width: 400px) { 
+  .file-preview img {
+      width: 60px;
+      height: 60px;
+    }
+
+    .remove-button {
+      top: 2px;
+      right: 2px;
+      padding: 2px;
+    }
+}
+
+@media (max-width: 600px) {
+    .file-preview img {
+        width: $file-preview-size-mobile;
+        height: $file-preview-size-mobile;
+      }
+  
+      .remove-button {
+        top: 5px;
+        right: 5px;
+        padding: 4px;
+        font-size: 12px;
+      }
+ }
+

@@ -1,0 +1,1 @@
+export const getFullImageURL = (url) => url ? window.location.origin + url : null;

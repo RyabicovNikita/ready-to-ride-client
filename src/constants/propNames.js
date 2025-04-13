@@ -5,6 +5,10 @@ export const USER_PROPS = {
   PASSWORD: "password",
   REPEAT_PASSWORD: "repeatPassword",
   IS_DRIVER: "isDriver",
+  BIRTHDAY: "birthday",
+  PHOTO: "imageUrl",
+  DRIVER_AUTO: "driverAuto",
+  REGISTER_DATE: "registed_at"
 };
 
 export const TRIP_PROPS = {

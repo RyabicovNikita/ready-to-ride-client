@@ -1,7 +1,7 @@
-export const request = (url, method, data) =>
+export const request = (url, method, data, headers = {"content-type": "application/json"}) =>
   fetch(window.location.origin + `/api/${url}`, {
     headers: {
-      "content-type": "application/json",
+      ...headers
     },
     method: method || "GET",
     body: data ? JSON.stringify(data) : undefined,

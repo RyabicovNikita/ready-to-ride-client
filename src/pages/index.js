@@ -5,3 +5,4 @@ export * from "./UnconfirmedTrips/index";
 export * from "./TripPage/index";
 export * from "./AboutUs/index";
 export * from "./TripPage/index";
+export * from "./UserAccount/index"

@@ -11,11 +11,13 @@ const registerShapeObject = {
     .string()
     .required("Введите имя")
     .min(3, "Имя может содержать не менее 3 символов")
-    .max(100, "Имя не может быть длиннее 100 символов "),
+    .max(100, "Имя не может быть длиннее 100 символов ")
+    .matches(/^[A-Za-zА-Яа-яЁё]+$/, 'Имя может содержать только буквы'),
   lastName: yup
     .string()
     .min(3, "Фамилия может содержать не менее 3 символов")
-    .max(100, "Фамилия не может быть длиннее 100 символов "),
+    .max(100, "Фамилия не может быть длиннее 100 символов ")
+    .matches(/^[A-Za-zА-Яа-яЁё]+$/, 'Имя может содержать только буквы'),
   password: yup
     .string()
     .required("Введите пароль")
@@ -33,7 +35,7 @@ const loginShapeObject = {
   password: yup.string().required("Введите пароль"),
 };
 
-export const getFormParams = (isRegister) => {
+export const getAuthFormParams = (isRegister) => {
   const authFormSchema = yup.object().shape(isRegister ? registerShapeObject : loginShapeObject);
   return isRegister
     ? {

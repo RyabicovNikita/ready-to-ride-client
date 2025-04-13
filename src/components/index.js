@@ -8,3 +8,4 @@ export * from "./Error/index";
 export * from "./Form/index";
 export * from "./CommentsWithNesting/index";
 export * from "./Comments/index";
+export * from "./FileUpload/index"
