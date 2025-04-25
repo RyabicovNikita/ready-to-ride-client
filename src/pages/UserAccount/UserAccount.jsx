@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { USER_PROPS } from "../../constants";
+import { USER_PROPS, USER_SESSION_KEY } from "../../constants";
 import {
   logoutUserIfTokenExpired,
   renderError,
@@ -86,20 +86,27 @@ export const UserAccount = () => {
     if (driverAuto === '{"{\\"null\\"}"}') driverAuto = "";
     const formData = new FormData();
     // Добавляем текстовые поля
-    formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
-    formData.append("birthday", mapDateToFormat(birthday, "yyyy-MM-dd"));
+    formData.append("firstName", firstName ?? "");
+    formData.append("lastName", lastName ?? "");
+    if(birthday) formData.append("birthday", mapDateToFormat(birthday, "yyyy-MM-dd"));
     formData.append("driverAuto", driverAuto);
     formData.append("imageFile", file || "");
 
+    
     const res = await updateUser(id, formData);
 
     if (res.error) {
       checkTokenExpired(res.error);
+      hideLoader();
       return;
     }
     const updateData = res.body;
+
     dispatch(setUser(updateData));
+    const sessionUserData = JSON.parse(sessionStorage.getItem(USER_SESSION_KEY));
+
+    sessionStorage.setItem(USER_SESSION_KEY, JSON.stringify({...sessionUserData, ...updateData}));
+  
     updateFields(
       Object.values(USER_PROPS).map((name) => ({
         name: name,
